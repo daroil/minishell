@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/03 19:38:47 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/04 15:01:14 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,5 +117,6 @@ void	no_command(char **splitted_input, char *path, char **paths);
 char	*valid_path(char **paths, char *filename);
 int		single_pipe(char **splitted_input, int fd_in, int fd_out, char **envp);
 int		single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp);
+char	*repeat_line_n_times(char *str, int n);
 
 #endif

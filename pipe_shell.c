@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/03 19:43:04 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/04 15:06:53 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,18 +114,194 @@ char	**split_by_arrows(char *command_args)
 	return (result);	
 }
 
+void	read_from_to_shell(char *delimimter, int in_fd, int out_fd, int n_of_pipes)
+{
+	char	*buf;
+	char	*pipes;
+
+	pipes = repeat_line_n_times("pipe ", n_of_pipes);
+	ft_putstr_fd(pipes, in_fd);
+	ft_putstr_fd("heredoc> ", in_fd);
+	buf = get_next_line(in_fd);
+	while (buf && (ft_strncmp(buf, delimimter, ft_strlen(buf) - 1)
+			|| ft_strlen(buf) == 1))
+	{
+		ft_putstr_fd(pipes, in_fd);
+		ft_putstr_fd("heredoc> ", in_fd);
+		ft_putstr_fd(buf, out_fd);
+		free(buf);
+		buf = get_next_line(in_fd);
+	}
+	free(pipes);
+	free(buf);
+}
+
+char	*repeat_line_n_times(char *str, int n)
+{
+	char	*res;
+	char	*mid_res;
+
+	n = n - 1;
+	if (n <= 0)
+		return ("");
+	res = ft_strdup(str);
+	n--;
+	while (n)
+	{
+		mid_res = ft_strjoin(res, str);
+		free(res);
+		res = ft_strdup(mid_res);
+		free(mid_res);
+		n--;
+	}
+	return (res);
+}
+
 int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp)
 {
 	// char **splitted;
-	
+	char	**cmd;
+	int		cmd_len;
+	pid_t	pid;
+	char	**paths;
+	char	*path;
+	int 	fd1;
+	int 	fd2;
+
 	// splitted = split_by_arrows(one_cmd_and_args);
 	int i = 0;
-	while (cmd_and_args[i])
+	cmd_len = 0;
+	pid = fork();
+	if (!pid)
 	{
-		printf("splitted i %d single pipe %s\n", i, cmd_and_args[i]);
-		i++;
-	}
-	//split << >> < >
+		cmd = malloc(sizeof(char *));
+		cmd[0] = NULL;
+		while (cmd_and_args[i])
+		{
+			if (strings_equal(cmd_and_args[i], "<"))
+			{
+				if(cmd_and_args[i+1])
+				{
+					fd1 = open(cmd_and_args[i+1], O_RDONLY);
+					if(fd1 == -1)
+					{
+						perror("file not found");
+						ft_split_clear(cmd);
+						exit(127);
+					}
+					dup2(fd1, STDIN_FILENO);
+					// dup standart input from cmd_and_args[i+1];
+					i++;
+				}
+				else
+				{
+					perror("file not found");
+					ft_split_clear(cmd);
+					exit(127);
+				} 
+			}
+			//need to implement pipes beforehand
+			// else if (strings_equal(cmd_and_args[i], "<<"))
+			// {
+			// 	if(cmd_and_args[i+1])
+			// 	{
+			// 		read_from_to_shell(cmd_and_args[i+1], STDIN_FILENO, STDIN_FILENO, 0);
+					
+			// 		// dup2(fd2, STDOUT_FILENO);
+			// 		// dup standart input from cmd_and_args[i+1];
+			// 		i++;
+			// 	}
+			// 	else
+			// 	{
+			// 		perror("No delimiter specified");
+			// 		ft_split_clear(cmd);
+			// 		exit(127);
+			// 	} 
+			// }
+				// check if(cmd_and_args[i+1]), else error
+				// dup stdin to start reading from stdin until delim cmd_and_args[i+1]
+				// i++;
+			else if (strings_equal(cmd_and_args[i], ">"))
+			{
+				if(cmd_and_args[i+1])
+				{
+					fd2 = open(cmd_and_args[i+1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+					if(fd2 == -1)
+					{
+						perror("No output file specified");
+						ft_split_clear(cmd);
+						exit(127);
+					}
+					dup2(fd2, STDOUT_FILENO);
+					// dup standart input from cmd_and_args[i+1];
+					i++;
+				}
+				else
+				{
+					perror("No output file specified");
+					ft_split_clear(cmd);
+					exit(127);
+				} 
+			}
+				// check if(cmd_and_args[i+1]), else error
+				// dup stdout to file cmd_and_args[i+1] in new mode
+				// i++;
+			else if (strings_equal(cmd_and_args[i+1], ">>"))
+			{
+				if(cmd_and_args[i+1])
+				{
+					fd2 = open(cmd_and_args[i+1], O_RDWR | O_CREAT | O_APPEND, 0644);
+					if(fd2 == -1)
+					{
+						perror("No output file specified");
+						ft_split_clear(cmd);
+						exit(127);
+					}
+					dup2(fd2, STDOUT_FILENO);
+					// dup standart input from cmd_and_args[i+1];
+					i++;
+				}
+				else
+				{
+					perror("No output file specified");
+					ft_split_clear(cmd);
+					exit(127);
+				} 
+			}
+				//check if(cmd_and_args[i+1]), else error
+				//dup stdout to file cmd_and_args[i+1]
+				//i++;
+			else
+			{
+					cmd = add_string_to_string_arr(cmd_and_args[i], cmd, cmd_len);
+					cmd_len++;
+			}
+			i++;
+		}
+		
+			// dups(fd_in, fd_out);
+			// if (fd_in == 3)
+			// 	close(4);
+			// if (fd_out == 4)
+			// 	close(3);
+			paths = get_paths(envp);
+			path = valid_path(paths, cmd[0]);
+			if (!path)
+				no_command(cmd, path, paths);
+			execve(path, cmd, envp);
+	}	
+	waitpid(pid, NULL, 0);
+	if (fd1)
+		close(fd1);
+	if (fd2)
+		close(fd2);
+	// i = 0;
+	// while (cmd[i])
+	// {
+	// 	printf("splitted i %d single pipe %s\n", i, cmd[i]);
+	// 	i++;
+	// }
+	// ft_split_clear(cmd);
 	return(1);
 }
 // single_pipe_("ls -at", 3, 4, envp)

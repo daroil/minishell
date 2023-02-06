@@ -6,11 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2023/02/06 19:06:20 by sbritani         ###   ########.fr       */
-=======
-/*   Updated: 2023/02/06 18:38:30 by dhendzel         ###   ########.fr       */
->>>>>>> be6a3a7dbc7bfd796458663c43e125ba8a20b152
+/*   Updated: 2023/02/06 19:15:56 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,14 +299,6 @@ int parse_input(char *input, t_settings *settings,char **envp)
 	else 
 	{
 		// int fd = open("testing", O_RDWR | O_CREAT | O_APPEND, 0644);
-<<<<<<< HEAD
-		// int *pip = malloc(sizeof(int) * 2);
-		// char **inp = malloc(sizeof(char *) * 2);
-		// inp[0] = str_copy("wc\0", -1); 
-		// inp[1] = NULL;
-		// pipe(pip);
-		single_pipe_(splitted_input, 0, 1, envp);
-=======
 		pid_t	*pid;
 
 		pid = malloc(sizeof(pid_t) * 3);
@@ -360,7 +348,6 @@ int parse_input(char *input, t_settings *settings,char **envp)
 			clear++;
 		}
 		free(inp);
->>>>>>> be6a3a7dbc7bfd796458663c43e125ba8a20b152
 		// printf("finished pipe\n");
 		// close(pip[1]);
 		// single_pipe(inp, pip[0], STDOUT_FILENO, envp);

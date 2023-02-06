@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/06 21:43:53 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/06 21:58:35 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,7 +302,7 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		// int *pip2;
 		int		i;
 		
-		number_of_pipes = 2;
+		number_of_pipes = 3;
 		pid = malloc(sizeof(pid_t) * (number_of_pipes + 1));
 		truby = malloc(sizeof(int *) * (number_of_pipes + 1));
 		i = 0;
@@ -315,10 +315,11 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		truby[i] = NULL;
 		// pip = malloc(sizeof(int) * 2);
 		// pip2 = malloc(sizeof(int) * 2);
-		char ***inp = malloc(sizeof(char **) * 4);
+		char ***inp = malloc(sizeof(char **) * 5);
 		inp[0] = malloc(sizeof(char *) * 3);
 		inp[1] = malloc(sizeof(char *) * 3);
 		inp[2] = malloc(sizeof(char *) * 3);
+		inp[3] = malloc(sizeof(char *) * 5);
 		inp[0][0] = str_copy("cat\0", -1);
 		inp[0][1] = str_copy("Makefile\0", -1);
 		inp[0][2] = NULL;
@@ -329,8 +330,13 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		inp[2][1] = str_copy("-l\0", -1);
 		// inp[2][2] = str_copy(">\0", -1);
 		// inp[2][3] = str_copy("testing\0", -1);
-		inp[2][2] = NULL;
-		inp[3] = NULL;
+		inp[2][4] = NULL;
+		inp[3][0] = str_copy("wc\0", -1);
+		inp[3][1] = str_copy("-l\0", -1);
+		inp[3][2] = str_copy(">\0", -1);
+		inp[3][3] = str_copy("testing\0", -1);
+		inp[3][4] = NULL;
+		inp[4] = NULL;
 		// i = 0;
 		// while(i < number_of_pipes)
 		// {

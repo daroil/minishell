@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+         #
+#    By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 18:04:41 by sbritani          #+#    #+#              #
-#    Updated: 2023/02/03 15:51:56 by dhendzel         ###   ########.fr        #
+#    Updated: 2023/02/06 18:24:21 by sbritani         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,11 +27,18 @@ NAME =  shell
 LIBFT = ./libft
 OBJ	= $(SRCS:.c=.o)
 
+INCRL		= -I /Users/$(USER)/.brew/opt/readline/include
+LIBRL		= -lreadline -L /Users/$(USER)/.brew/opt/readline/lib
+LIBRARIES	= -Llibft -lft $(LIBRL)
+INCLUDES	= -I ./header -Ilibft $(INCRL)
 
 all: libft $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) libft/libft.a -lreadline -o $(NAME)
+	$(CC) $(OBJ) libft/libft.a $(LIBRL) $(INCRL) -o $(NAME)
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(INCRL) -c $^ -o $@
 
 clean:
 	rm -f $(OBJ)

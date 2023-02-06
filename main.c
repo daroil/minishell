@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/06 15:09:48 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/06 19:06:20 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,20 +336,29 @@ void	finish(t_settings *settings, char *input)
 	free(input);
 }
 
-char	*my_readline(void)
-{
-	char *res;
-	char *prompt;
-	
-	prompt = ft_str_join_free_first(cur_dir(), "> \0");
-	res = readline(prompt);
-	free(prompt);
-	return (res);
-}
+void	my_readline(t_settings *settings);
 
 void	interrupt_input(int sig)
 {
+	// printf("\nint interrupt 1\n");
+	rl_on_new_line();
+	rl_replace_line("\0", 0);
+	printf("\n");
 	rl_redisplay();
+	// printf("int interrupt 2\n");
+	// my_readline(NULL);
+}
+
+void	my_readline(t_settings *settings)
+{
+	char *prompt;
+	static t_settings *local_settings = NULL;
+	
+	if (!local_settings)
+		local_settings = settings;
+	prompt = ft_str_join_free_first(cur_dir(), "> \0");
+	local_settings->input = readline(prompt);
+	free(prompt);
 }
 
 void	shell(char *envp[])
@@ -358,20 +367,20 @@ void	shell(char *envp[])
 	t_settings *settings;
 
 	settings = create_setttings(envp);
-	// signal(SIGINT, interrupt_input);
 	settings->last_working_directory = cur_dir();
-	res = my_readline();
-	if (!parse_input(res, settings, envp))
-		return (finish(settings, res));
-	while (res)
+	signal(SIGINT, interrupt_input);
+	my_readline(settings);
+	if (!parse_input(settings->input, settings, envp))
+		return (finish(settings, settings->input));
+	while (settings->input)
 	{
-		add_history(res);
-		free(res);
-		res = my_readline();
-		if (!parse_input(res, settings, envp))
-			return (finish(settings, res));
+		add_history(settings->input);
+		free(settings->input);
+		my_readline(NULL);
+		if (!parse_input(settings->input, settings, envp))
+			return (finish(settings, settings->input));
 	}
-	finish(settings, res);
+	finish(settings, settings->input);
 }
 
 int main(int argc, char **argv, char **envp)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/04 15:24:44 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/06 15:09:48 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,9 +239,9 @@ int parse_input(char *input, t_settings *settings,char **envp)
 	char	*path;
 	char	**paths;
 	splitted_input = split(input, settings);
-	print_splitted(splitted_input);
+	// print_splitted(splitted_input);
 
-	print_dict(settings->env);
+	// print_dict(settings->env);
 	if (strings_equal(splitted_input[0], "exit"))
 	{
 		ft_split_clear(splitted_input);
@@ -303,7 +303,7 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		// inp[1] = NULL;
 		// pipe(pip);
 		single_pipe_(splitted_input, 0, 1, envp);
-		printf("finished pipe\n");
+		// printf("finished pipe\n");
 		// close(pip[1]);
 		// single_pipe(inp, pip[0], STDOUT_FILENO, envp);
 		// close(pip[0]);

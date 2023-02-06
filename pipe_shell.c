@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/06 18:41:24 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/06 20:54:59 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,8 +182,8 @@ int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **
 		{
 			dup2((*pip)[1], STDOUT_FILENO);
 			close((*pip)[0]);
-			// close((*pip2)[0]);
-			// close((*pip2)[1]);
+			close((*pip2)[0]);
+			close((*pip2)[1]);
 		}
 		else if (fd_out == 1)
 		{
@@ -204,6 +204,7 @@ int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **
 		cmd[0] = NULL;
 		while (cmd_and_args[i])
 		{
+			// 		ft_putstr_fd("ebal1\n", 2);
 			if (strings_equal(cmd_and_args[i], "<"))
 			{
 				if(cmd_and_args[i+1])
@@ -226,27 +227,27 @@ int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **
 					exit(127);
 				} 
 			}
-			//need to implement pipes beforehand
-			// else if (strings_equal(cmd_and_args[i], "<<"))
-			// {
-			// 	if(cmd_and_args[i+1])
-			// 	{
-			// 		read_from_to_shell(cmd_and_args[i+1], STDIN_FILENO, STDIN_FILENO, 0);
+			// //need to implement pipes beforehand
+			// // else if (strings_equal(cmd_and_args[i], "<<"))
+			// // {
+			// // 	if(cmd_and_args[i+1])
+			// // 	{
+			// // 		read_from_to_shell(cmd_and_args[i+1], STDIN_FILENO, STDIN_FILENO, 0);
 					
-			// 		// dup2(fd2, STDOUT_FILENO);
-			// 		// dup standart input from cmd_and_args[i+1];
-			// 		i++;
-			// 	}
-			// 	else
-			// 	{
-			// 		perror("No delimiter specified");
-			// 		ft_split_clear(cmd);
-			// 		exit(127);
-			// 	} 
-			// }
-				// check if(cmd_and_args[i+1]), else error
-				// dup stdin to start reading from stdin until delim cmd_and_args[i+1]
-				// i++;
+			// // 		// dup2(fd2, STDOUT_FILENO);
+			// // 		// dup standart input from cmd_and_args[i+1];
+			// // 		i++;
+			// // 	}
+			// // 	else
+			// // 	{
+			// // 		perror("No delimiter specified");
+			// // 		ft_split_clear(cmd);
+			// // 		exit(127);
+			// // 	} 
+			// // }
+			// 	// check if(cmd_and_args[i+1]), else error
+			// 	// dup stdin to start reading from stdin until delim cmd_and_args[i+1]
+			// 	// i++;
 			else if (strings_equal(cmd_and_args[i], ">"))
 			{
 				if(cmd_and_args[i+1])
@@ -269,9 +270,9 @@ int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **
 					exit(127);
 				} 
 			}
-				// check if(cmd_and_args[i+1]), else error
-				// dup stdout to file cmd_and_args[i+1] in new mode
-				// i++;
+			// 	// check if(cmd_and_args[i+1]), else error
+			// 	// dup stdout to file cmd_and_args[i+1] in new mode
+			// 	// i++;
 			else if (strings_equal(cmd_and_args[i+1], ">>"))
 			{
 				if(cmd_and_args[i+1])
@@ -294,9 +295,9 @@ int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **
 					exit(127);
 				} 
 			}
-				//check if(cmd_and_args[i+1]), else error
-				//dup stdout to file cmd_and_args[i+1]
-				//i++;
+				// check if(cmd_and_args[i+1]), else error
+				// dup stdout to file cmd_and_args[i+1]
+				// i++;
 			else
 			{
 					cmd = add_string_to_string_arr(cmd_and_args[i], cmd, cmd_len);
@@ -304,34 +305,12 @@ int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **
 			}
 			i++;
 		}
-		
-			// dups(fd_in, fd_out);
-			// if (fd_in == 3)
-			// 	close(4);
-			// if (fd_out == 4)
-			// 	close(3);
 			paths = get_paths(envp);
 			path = valid_path(paths, cmd[0]);
 			if (!path)
 				no_command(cmd, path, paths);
-			ft_putstr_fd("doing child ", 2);
-			ft_putnbr_fd(num, 2);
-			ft_putchar_fd('\n', 2);
 			execve(path, cmd, envp);
-	}	
-	// if (fd_in)
-	// {
-	// 	close((*pip)[0]);
-	// }
-	// if (fd_out != 1)
-	// {
-	// 	close ((*pip)[1]);
-	// }
-	
-	if (fd1)
-		close(fd1);
-	if (fd2)
-		close(fd2);
+	}
 	// i = 0;
 	// while (cmd[i])
 	// {

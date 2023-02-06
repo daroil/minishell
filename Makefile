@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+         #
+#    By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 18:04:41 by sbritani          #+#    #+#              #
-#    Updated: 2023/02/06 18:24:21 by sbritani         ###   ########.fr        #
+#    Updated: 2023/02/06 19:54:52 by dhendzel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 

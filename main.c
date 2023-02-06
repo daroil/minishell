@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/06 19:15:56 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/06 20:55:20 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,7 +298,6 @@ int parse_input(char *input, t_settings *settings,char **envp)
 	}
 	else 
 	{
-		// int fd = open("testing", O_RDWR | O_CREAT | O_APPEND, 0644);
 		pid_t	*pid;
 
 		pid = malloc(sizeof(pid_t) * 3);
@@ -307,16 +306,18 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		char ***inp = malloc(sizeof(char **) * 4);
 		inp[0] = malloc(sizeof(char *) * 3);
 		inp[1] = malloc(sizeof(char *) * 3);
-		inp[2] = malloc(sizeof(char *) * 3);
+		inp[2] = malloc(sizeof(char *) * 5);
 		inp[0][0] = str_copy("cat\0", -1);
 		inp[0][1] = str_copy("Makefile\0", -1);
 		inp[0][2] = NULL;
-		inp[1][0] = str_copy("cat\0", -1);
-		inp[1][1] = str_copy("Makefile\0", -1);
+		inp[1][0] = str_copy("grep\0", -1);
+		inp[1][1] = str_copy("NAME\0", -1);
 		inp[1][2] = NULL;
 		inp[2][0] = str_copy("wc\0", -1);
 		inp[2][1] = str_copy("-l\0", -1);
-		inp[2][2] = NULL;
+		inp[2][2] = str_copy(">\0", -1);
+		inp[2][3] = str_copy("testing\0", -1);
+		inp[2][4] = NULL;
 		inp[3] = NULL;
 		pipe(pip);
 		pipe(pip2);
@@ -327,19 +328,15 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		single_pipe_(inp[0], 0, pip[1], envp, &pip, pid, 0, &pip2);
 		single_pipe_(inp[1], pip[0], pip2[1], envp, &pip, pid, 1, &pip2);
 		single_pipe_(inp[2], pip2[0], 1, envp, &pip, pid, 2, &pip2);
-		usleep(1000);
-		printf("%d %d %d %d\n", pip[0], pip[1], pip2[0], pip2[1]);
-		close(pip[1]);
-		printf("pervyi %s\n", get_next_line(pip[0]));
 		close(pip[0]);
-		close(pip2[1]);
-		printf("vtoroi %s\n", get_next_line(pip2[0]));
+		close(pip[1]);
 		close(pip2[0]);
+		close(pip2[1]);
+		free(pip);
+		free(pip2);
 		waitpid(pid[0], NULL, 0);
 		waitpid(pid[1], NULL, 0);
 		waitpid(pid[2], NULL, 0);
-		free(pip);
-		free(pip2);
 		free(pid);
 		int clear = 0;
 		while (inp[clear])

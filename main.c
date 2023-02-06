@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/06 20:55:20 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/06 21:43:53 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,8 +235,6 @@ int parse_input(char *input, t_settings *settings,char **envp)
 {
 	char **splitted_input;
 	pid_t	pid;
-	int *pip;
-	int *pip2;
 	// char	**args;
 	char	*path;
 	char	**paths;
@@ -299,14 +297,28 @@ int parse_input(char *input, t_settings *settings,char **envp)
 	else 
 	{
 		pid_t	*pid;
-
-		pid = malloc(sizeof(pid_t) * 3);
-		pip = malloc(sizeof(int) * 2);
-		pip2 = malloc(sizeof(int) * 2);
+		int		number_of_pipes;
+		int 	**truby;
+		// int *pip2;
+		int		i;
+		
+		number_of_pipes = 2;
+		pid = malloc(sizeof(pid_t) * (number_of_pipes + 1));
+		truby = malloc(sizeof(int *) * (number_of_pipes + 1));
+		i = 0;
+		while (i < number_of_pipes)
+		{
+			truby[i] = malloc(sizeof(int) * 2);
+			pipe(truby[i]);
+			i++;
+		}
+		truby[i] = NULL;
+		// pip = malloc(sizeof(int) * 2);
+		// pip2 = malloc(sizeof(int) * 2);
 		char ***inp = malloc(sizeof(char **) * 4);
 		inp[0] = malloc(sizeof(char *) * 3);
 		inp[1] = malloc(sizeof(char *) * 3);
-		inp[2] = malloc(sizeof(char *) * 5);
+		inp[2] = malloc(sizeof(char *) * 3);
 		inp[0][0] = str_copy("cat\0", -1);
 		inp[0][1] = str_copy("Makefile\0", -1);
 		inp[0][2] = NULL;
@@ -315,28 +327,54 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		inp[1][2] = NULL;
 		inp[2][0] = str_copy("wc\0", -1);
 		inp[2][1] = str_copy("-l\0", -1);
-		inp[2][2] = str_copy(">\0", -1);
-		inp[2][3] = str_copy("testing\0", -1);
-		inp[2][4] = NULL;
+		// inp[2][2] = str_copy(">\0", -1);
+		// inp[2][3] = str_copy("testing\0", -1);
+		inp[2][2] = NULL;
 		inp[3] = NULL;
-		pipe(pip);
-		pipe(pip2);
+		// i = 0;
+		// while(i < number_of_pipes)
+		// {
+		// 	pipe(truby[i]);
+		// 	i++;
+		// }
+		// pipe(pip);
+		// pipe(pip2);
 		//if(needs pipe)
 			//create pipe
 			//while(number of pipes)
 			//execute single pipe to pipe output
-		single_pipe_(inp[0], 0, pip[1], envp, &pip, pid, 0, &pip2);
-		single_pipe_(inp[1], pip[0], pip2[1], envp, &pip, pid, 1, &pip2);
-		single_pipe_(inp[2], pip2[0], 1, envp, &pip, pid, 2, &pip2);
-		close(pip[0]);
-		close(pip[1]);
-		close(pip2[0]);
-		close(pip2[1]);
-		free(pip);
-		free(pip2);
-		waitpid(pid[0], NULL, 0);
-		waitpid(pid[1], NULL, 0);
-		waitpid(pid[2], NULL, 0);
+		i = 0;
+		while (i <= number_of_pipes)
+		{
+			single_pipe_(inp[i], truby, envp, pid, i, number_of_pipes);
+			i++;
+		}
+		// single_pipe_(inp[0], 0, pip[1], envp, &pip, pid, 0, &pip2);
+		// single_pipe_(inp[1], pip[0], pip2[1], envp, &pip, pid, 1, &pip2);
+		// single_pipe_(inp[2], pip2[0], 1, envp, &pip, pid, 2, &pip2);
+		i = 0;
+		while(truby[i])
+		{
+			close(truby[i][0]);
+			close(truby[i][1]);
+			free(truby[i]);
+			i++;
+		}
+		free(truby);
+		// close(pip[0]);
+		// close(pip[1]);
+		// close(pip2[0]);
+		// close(pip2[1]);
+		// free(pip);
+		// free(pip2);
+		i = 0;
+		while (number_of_pipes)
+		{
+			waitpid(pid[number_of_pipes--], NULL, 0);
+		}
+		// waitpid(pid[0], NULL, 0);
+		// waitpid(pid[1], NULL, 0);
+		// waitpid(pid[2], NULL, 0);
 		free(pid);
 		int clear = 0;
 		while (inp[clear])

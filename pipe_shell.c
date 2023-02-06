@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/06 20:54:59 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/06 21:37:28 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,32 @@ char	*repeat_line_n_times(char *str, int n)
 	return (res);
 }
 
-int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **pip,pid_t	*pid, int num, int **pip2)
+void	close_truby(int **truby, int cur, int len)
+{
+	int	i;
+
+	i = 0;
+	if (cur == 0)
+		close(truby[0][0]);
+	else if (cur == len)
+		close(truby[len - 1][1]);
+	else
+	{
+		close(truby[cur - 1][1]);
+		close(truby[cur][0]);
+	}
+	while (truby[i])
+	{
+		if (cur < i || cur > i + 1)
+		{
+			close(truby[i][0]);
+			close(truby[i][1]);
+		}
+		i++;
+	}
+}
+
+int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int num, int size)
 {
 	// char **splitted;
 	char	**cmd;
@@ -172,33 +197,34 @@ int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **
 	int i = 0;
 	cmd_len = 0;
 
-			printf("starting child %d\n", num);
+			// printf("starting child %d\n", num);
 	pid[num] = fork();
 	if (!pid[num])
 	{
 		//if pipe
 		//dup input and output
-		if (!fd_in)
+		if (num == 0)
 		{
-			dup2((*pip)[1], STDOUT_FILENO);
-			close((*pip)[0]);
-			close((*pip2)[0]);
-			close((*pip2)[1]);
+			dup2(truby[0][1], STDOUT_FILENO);
+			// close(truby[0][0]);
+			// close(truby[1][0]);
+			// close(truby[1][1]);
 		}
-		else if (fd_out == 1)
+		else if (num == size)
 		{
-			dup2((*pip2)[0], STDIN_FILENO);
-			close ((*pip2)[1]);
-			close ((*pip)[1]);
-			close ((*pip)[0]);
+			dup2(truby[num - 1][0], STDIN_FILENO);
+			// close ((*pip2)[1]);
+			// close ((*pip)[1]);
+			// close ((*pip)[0]);
 		}
 		else
 		{
-			dup2((*pip)[0], STDIN_FILENO);
-			dup2((*pip2)[1], STDOUT_FILENO);
-			close ((*pip)[1]);	
-			close ((*pip2)[0]);	
+			dup2(truby[num - 1][0], STDIN_FILENO);
+			dup2(truby[num][1], STDOUT_FILENO);
+			// close ((*pip)[1]);	
+			// close ((*pip2)[0]);	
 		}
+		close_truby(truby, num, size);
 		// dup2(fd_out, STDOUT_FILENO);
 		cmd = malloc(sizeof(char *));
 		cmd[0] = NULL;
@@ -320,6 +346,169 @@ int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **
 	// ft_split_clear(cmd);
 	return(1);
 }
+// int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **pip,pid_t	*pid, int num, int **pip2)
+// {
+// 	// char **splitted;
+// 	char	**cmd;
+// 	int		cmd_len;
+	
+// 	char	**paths;
+// 	char	*path;
+// 	int 	fd1;
+// 	int 	fd2;
+
+// 	// splitted = split_by_arrows(one_cmd_and_args);
+// 	int i = 0;
+// 	cmd_len = 0;
+
+// 			printf("starting child %d\n", num);
+// 	pid[num] = fork();
+// 	if (!pid[num])
+// 	{
+// 		//if pipe
+// 		//dup input and output
+// 		if (!fd_in)
+// 		{
+// 			dup2((*pip)[1], STDOUT_FILENO);
+// 			close((*pip)[0]);
+// 			close((*pip2)[0]);
+// 			close((*pip2)[1]);
+// 		}
+// 		else if (fd_out == 1)
+// 		{
+// 			dup2((*pip2)[0], STDIN_FILENO);
+// 			close ((*pip2)[1]);
+// 			close ((*pip)[1]);
+// 			close ((*pip)[0]);
+// 		}
+// 		else
+// 		{
+// 			dup2((*pip)[0], STDIN_FILENO);
+// 			dup2((*pip2)[1], STDOUT_FILENO);
+// 			close ((*pip)[1]);	
+// 			close ((*pip2)[0]);	
+// 		}
+// 		// dup2(fd_out, STDOUT_FILENO);
+// 		cmd = malloc(sizeof(char *));
+// 		cmd[0] = NULL;
+// 		while (cmd_and_args[i])
+// 		{
+// 			// 		ft_putstr_fd("ebal1\n", 2);
+// 			if (strings_equal(cmd_and_args[i], "<"))
+// 			{
+// 				if(cmd_and_args[i+1])
+// 				{
+// 					fd1 = open(cmd_and_args[i+1], O_RDONLY);
+// 					if(fd1 == -1)
+// 					{
+// 						perror("file not found");
+// 						ft_split_clear(cmd);
+// 						exit(127);
+// 					}
+// 					dup2(fd1, STDIN_FILENO);
+// 					// dup standart input from cmd_and_args[i+1];
+// 					i++;
+// 				}
+// 				else
+// 				{
+// 					perror("file not found");
+// 					ft_split_clear(cmd);
+// 					exit(127);
+// 				} 
+// 			}
+// 			// //need to implement pipes beforehand
+// 			// // else if (strings_equal(cmd_and_args[i], "<<"))
+// 			// // {
+// 			// // 	if(cmd_and_args[i+1])
+// 			// // 	{
+// 			// // 		read_from_to_shell(cmd_and_args[i+1], STDIN_FILENO, STDIN_FILENO, 0);
+					
+// 			// // 		// dup2(fd2, STDOUT_FILENO);
+// 			// // 		// dup standart input from cmd_and_args[i+1];
+// 			// // 		i++;
+// 			// // 	}
+// 			// // 	else
+// 			// // 	{
+// 			// // 		perror("No delimiter specified");
+// 			// // 		ft_split_clear(cmd);
+// 			// // 		exit(127);
+// 			// // 	} 
+// 			// // }
+// 			// 	// check if(cmd_and_args[i+1]), else error
+// 			// 	// dup stdin to start reading from stdin until delim cmd_and_args[i+1]
+// 			// 	// i++;
+// 			else if (strings_equal(cmd_and_args[i], ">"))
+// 			{
+// 				if(cmd_and_args[i+1])
+// 				{
+// 					fd2 = open(cmd_and_args[i+1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+// 					if(fd2 == -1)
+// 					{
+// 						perror("No output file specified");
+// 						ft_split_clear(cmd);
+// 						exit(127);
+// 					}
+// 					dup2(fd2, STDOUT_FILENO);
+// 					// dup standart input from cmd_and_args[i+1];
+// 					i++;
+// 				}
+// 				else
+// 				{
+// 					perror("No output file specified");
+// 					ft_split_clear(cmd);
+// 					exit(127);
+// 				} 
+// 			}
+// 			// 	// check if(cmd_and_args[i+1]), else error
+// 			// 	// dup stdout to file cmd_and_args[i+1] in new mode
+// 			// 	// i++;
+// 			else if (strings_equal(cmd_and_args[i+1], ">>"))
+// 			{
+// 				if(cmd_and_args[i+1])
+// 				{
+// 					fd2 = open(cmd_and_args[i+1], O_RDWR | O_CREAT | O_APPEND, 0644);
+// 					if(fd2 == -1)
+// 					{
+// 						perror("No output file specified");
+// 						ft_split_clear(cmd);
+// 						exit(127);
+// 					}
+// 					dup2(fd2, STDOUT_FILENO);
+// 					// dup standart input from cmd_and_args[i+1];
+// 					i++;
+// 				}
+// 				else
+// 				{
+// 					perror("No output file specified");
+// 					ft_split_clear(cmd);
+// 					exit(127);
+// 				} 
+// 			}
+// 				// check if(cmd_and_args[i+1]), else error
+// 				// dup stdout to file cmd_and_args[i+1]
+// 				// i++;
+// 			else
+// 			{
+// 					cmd = add_string_to_string_arr(cmd_and_args[i], cmd, cmd_len);
+// 					cmd_len++;
+// 			}
+// 			i++;
+// 		}
+// 			paths = get_paths(envp);
+// 			path = valid_path(paths, cmd[0]);
+// 			if (!path)
+// 				no_command(cmd, path, paths);
+// 			execve(path, cmd, envp);
+// 	}
+// 	// i = 0;
+// 	// while (cmd[i])
+// 	// {
+// 	// 	printf("splitted i %d single pipe %s\n", i, cmd[i]);
+// 	// 	i++;
+// 	// }
+// 	// ft_split_clear(cmd);
+// 	return(1);
+// }
 // single_pipe_("ls -at", 3, 4, envp)
 // single_pipe_("echo ", 3, 4, envp) use our echo (env, pwd, cd, )
 // single_pipe_("ls -at > logs", 3, 4, envp)

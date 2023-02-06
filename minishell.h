@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/06 19:16:06 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/06 21:11:45 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,8 @@ int	check_path(char **envp, char *splitted_input);
 void	no_command(char **splitted_input, char *path, char **paths);
 char	*valid_path(char **paths, char *filename);
 int		single_pipe(char **splitted_input, int fd_in, int fd_out, char **envp);
-int		single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **pip, pid_t	*pid, int num, int **pip2);
+// int		single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **pip, pid_t	*pid, int num, int **pip2);
+int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int num, int size);
 char	*repeat_line_n_times(char *str, int n);
 
 #endif

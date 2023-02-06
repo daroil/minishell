@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/04 15:06:53 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/06 18:41:24 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,12 +157,12 @@ char	*repeat_line_n_times(char *str, int n)
 	return (res);
 }
 
-int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp)
+int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **pip,pid_t	*pid, int num, int **pip2)
 {
 	// char **splitted;
 	char	**cmd;
 	int		cmd_len;
-	pid_t	pid;
+	
 	char	**paths;
 	char	*path;
 	int 	fd1;
@@ -171,9 +171,35 @@ int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp)
 	// splitted = split_by_arrows(one_cmd_and_args);
 	int i = 0;
 	cmd_len = 0;
-	pid = fork();
-	if (!pid)
+
+			printf("starting child %d\n", num);
+	pid[num] = fork();
+	if (!pid[num])
 	{
+		//if pipe
+		//dup input and output
+		if (!fd_in)
+		{
+			dup2((*pip)[1], STDOUT_FILENO);
+			close((*pip)[0]);
+			// close((*pip2)[0]);
+			// close((*pip2)[1]);
+		}
+		else if (fd_out == 1)
+		{
+			dup2((*pip2)[0], STDIN_FILENO);
+			close ((*pip2)[1]);
+			close ((*pip)[1]);
+			close ((*pip)[0]);
+		}
+		else
+		{
+			dup2((*pip)[0], STDIN_FILENO);
+			dup2((*pip2)[1], STDOUT_FILENO);
+			close ((*pip)[1]);	
+			close ((*pip2)[0]);	
+		}
+		// dup2(fd_out, STDOUT_FILENO);
 		cmd = malloc(sizeof(char *));
 		cmd[0] = NULL;
 		while (cmd_and_args[i])
@@ -288,9 +314,20 @@ int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp)
 			path = valid_path(paths, cmd[0]);
 			if (!path)
 				no_command(cmd, path, paths);
+			ft_putstr_fd("doing child ", 2);
+			ft_putnbr_fd(num, 2);
+			ft_putchar_fd('\n', 2);
 			execve(path, cmd, envp);
 	}	
-	waitpid(pid, NULL, 0);
+	// if (fd_in)
+	// {
+	// 	close((*pip)[0]);
+	// }
+	// if (fd_out != 1)
+	// {
+	// 	close ((*pip)[1]);
+	// }
+	
 	if (fd1)
 		close(fd1);
 	if (fd2)

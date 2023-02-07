@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/07 14:08:26 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/07 17:32:54 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <readline/history.h>
 #include <unistd.h>
 #include "libft/libft.h"
+#include <termios.h>
 
 # include <fcntl.h>
 # include <sys/wait.h>
@@ -40,6 +41,8 @@ typedef struct	settings_s
 	t_dict	*exported_env;
 	char	*last_working_directory;
 	char	*input;
+	char	*last_cmd;
+	struct termios *term_state;
 }	t_settings;
 
 

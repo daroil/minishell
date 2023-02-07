@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 20:50:23 by sbritani          #+#    #+#             */
-/*   Updated: 2023/01/25 19:06:34 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/07 17:13:16 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ t_settings	*create_setttings(char **env)
 	res = malloc(sizeof(t_settings));
 	res->env = init_dict();
 	res->exported_env = init_dict();
+	res->last_cmd = NULL;
+	res->term_state = NULL;
 	parse_env(env, res);
 	return (res);
 }
@@ -43,6 +45,7 @@ t_settings	*create_setttings(char **env)
 void	clear_settings(t_settings *settings)
 {
 	free(settings->last_working_directory);
+	free(settings->last_cmd);
 	free_dict(settings->env);
 	free_dict(settings->exported_env);
 	free(settings);

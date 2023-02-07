@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/07 14:06:33 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/07 17:32:24 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "minishell.h"
 
@@ -235,6 +236,8 @@ int parse_input(char *input, t_settings *settings,char **envp)
 {
 	char **splitted_input;
 	char ***resplitted_input;
+	if (!input)
+		return (0);
 	splitted_input = split(input, settings);
 	resplitted_input = resplit(splitted_input);
 	// print_splitted(splitted_input);
@@ -384,12 +387,40 @@ void	my_readline(t_settings *settings)
 	free(prompt);
 }
 
+struct termios saved;
+
+void restore(void) {
+    tcsetattr(STDIN_FILENO, TCSANOW, &saved);
+}
+
+void	disable_ctrlc(t_settings *settings)
+{	
+	settings->term_state = malloc(sizeof(struct termios *));
+	tcgetattr(STDIN_FILENO, settings->term_state);
+	settings->term_state->c_lflag &= ECHO;
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, settings->term_state);
+	free(settings->term_state);
+	settings->term_state = NULL;
+}
+void	enable_ctrlc(t_settings *settings)
+{
+	settings->term_state = malloc(sizeof(struct termios *));
+	tcgetattr(STDIN_FILENO, settings->term_state);
+	settings->term_state->c_lflag = ECHOCTL | ECHO | ECHOE | ECHOKE | ICANON | ISIG | IEXTEN | PENDIN;
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, settings->term_state);
+	free(settings->term_state);
+	settings->term_state = NULL;
+}
+
+
 void	shell(char *envp[])
 {
 	char *res;
 	t_settings *settings;
 
 	settings = create_setttings(envp);
+	disable_ctrlc(settings);
+	// enable_ctrlc(settings);
 	settings->last_working_directory = cur_dir();
 	signal(SIGINT, interrupt_input);
 	my_readline(settings);
@@ -397,7 +428,17 @@ void	shell(char *envp[])
 		return (finish(settings, settings->input));
 	while (settings->input)
 	{
-		add_history(settings->input);
+		if (!strings_equal(settings->last_cmd, settings->input))
+			add_history(settings->input);
+		if (settings->input)
+		{
+			if (settings->last_cmd)
+			{
+				free(settings->last_cmd);
+				settings->last_cmd = NULL;
+			}
+			settings->last_cmd = str_copy(settings->input, -1);
+		}
 		free(settings->input);
 		my_readline(NULL);
 		if (!parse_input(settings->input, settings, envp))
@@ -405,6 +446,8 @@ void	shell(char *envp[])
 	}
 	finish(settings, settings->input);
 }
+
+
 
 int main(int argc, char **argv, char **envp)
 {

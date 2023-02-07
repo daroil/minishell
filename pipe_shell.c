@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/07 12:55:36 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/07 13:50:03 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,25 +114,21 @@ char	**split_by_arrows(char *command_args)
 	return (result);	
 }
 
-void	read_from_to_shell(char *delimimter, int in_fd, int out_fd, int n_of_pipes)
+void	read_from_to_shell(char *delimimter, int in_fd, int out_fd)
 {
 	char	*buf;
 	char	*pipes;
 
-	pipes = repeat_line_n_times("pipe ", n_of_pipes);
-	ft_putstr_fd(pipes, in_fd);
-	ft_putstr_fd("heredoc> ", in_fd);
+	ft_putstr_fd("> ", in_fd);
 	buf = get_next_line(in_fd);
 	while (buf && (ft_strncmp(buf, delimimter, ft_strlen(buf) - 1)
 			|| ft_strlen(buf) == 1))
 	{
-		ft_putstr_fd(pipes, in_fd);
-		ft_putstr_fd("heredoc> ", in_fd);
+		ft_putstr_fd("> ", in_fd);
 		ft_putstr_fd(buf, out_fd);
 		free(buf);
 		buf = get_next_line(in_fd);
 	}
-	free(pipes);
 	free(buf);
 }
 
@@ -184,7 +180,6 @@ void	close_truby(int **truby, int cur, int len)
 
 int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int num, int size)
 {
-	// char **splitted;
 	char	**cmd;
 	int		cmd_len;
 	
@@ -236,27 +231,41 @@ int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int n
 					exit(127);
 				} 
 			}
-			// //need to implement pipes beforehand
-			// // else if (strings_equal(cmd_and_args[i], "<<"))
-			// // {
-			// // 	if(cmd_and_args[i+1])
-			// // 	{
-			// // 		read_from_to_shell(cmd_and_args[i+1], STDIN_FILENO, STDIN_FILENO, 0);
+			else if (strings_equal(cmd_and_args[i], "<<"))
+			{
+				if(cmd_and_args[i+1])
+				{
+					int	heredoc_pipe[2];
+					char *buf;
 					
-			// // 		// dup2(fd2, STDOUT_FILENO);
-			// // 		// dup standart input from cmd_and_args[i+1];
-			// // 		i++;
-			// // 	}
-			// // 	else
-			// // 	{
-			// // 		perror("No delimiter specified");
-			// // 		ft_split_clear(cmd);
-			// // 		exit(127);
-			// // 	} 
-			// // }
-			// 	// check if(cmd_and_args[i+1]), else error
-			// 	// dup stdin to start reading from stdin until delim cmd_and_args[i+1]
-			// 	// i++;
+					pipe(heredoc_pipe);
+					read_from_to_shell(cmd_and_args[i+1], STDIN_FILENO, heredoc_pipe[1]);
+					close(heredoc_pipe[1]);
+					if (!cmd_and_args[i+2])
+					{
+						buf = get_next_line(heredoc_pipe[0]);
+						while (buf)
+						{
+							ft_putstr_fd(buf, 1);
+							free(buf);
+							buf = get_next_line(heredoc_pipe[0]);
+						}
+						free(buf);	
+					}
+					else
+						dup2(heredoc_pipe[0], STDIN_FILENO);
+					i++;
+				}
+				else
+				{
+					perror("No delimiter specified");
+					ft_split_clear(cmd);
+					exit(127);
+				} 
+			}
+				// check if(cmd_and_args[i+1]), else error
+				// dup stdin to start reading from stdin until delim cmd_and_args[i+1]
+				// i++;
 			else if (strings_equal(cmd_and_args[i], ">"))
 			{
 				if(cmd_and_args[i+1])

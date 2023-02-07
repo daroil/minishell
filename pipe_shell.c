@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/06 21:37:28 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/07 12:55:36 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,44 +193,28 @@ int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int n
 	int 	fd1;
 	int 	fd2;
 
-	// splitted = split_by_arrows(one_cmd_and_args);
 	int i = 0;
 	cmd_len = 0;
-
-			// printf("starting child %d\n", num);
 	pid[num] = fork();
 	if (!pid[num])
 	{
-		//if pipe
-		//dup input and output
-		if (num == 0)
+		if (size)
 		{
-			dup2(truby[0][1], STDOUT_FILENO);
-			// close(truby[0][0]);
-			// close(truby[1][0]);
-			// close(truby[1][1]);
+			if (num == 0)
+				dup2(truby[0][1], STDOUT_FILENO);
+			else if (num == size)
+				dup2(truby[num - 1][0], STDIN_FILENO);
+			else
+			{
+				dup2(truby[num - 1][0], STDIN_FILENO);
+				dup2(truby[num][1], STDOUT_FILENO);
+			}
+			close_truby(truby, num, size);
 		}
-		else if (num == size)
-		{
-			dup2(truby[num - 1][0], STDIN_FILENO);
-			// close ((*pip2)[1]);
-			// close ((*pip)[1]);
-			// close ((*pip)[0]);
-		}
-		else
-		{
-			dup2(truby[num - 1][0], STDIN_FILENO);
-			dup2(truby[num][1], STDOUT_FILENO);
-			// close ((*pip)[1]);	
-			// close ((*pip2)[0]);	
-		}
-		close_truby(truby, num, size);
-		// dup2(fd_out, STDOUT_FILENO);
 		cmd = malloc(sizeof(char *));
 		cmd[0] = NULL;
 		while (cmd_and_args[i])
 		{
-			// 		ft_putstr_fd("ebal1\n", 2);
 			if (strings_equal(cmd_and_args[i], "<"))
 			{
 				if(cmd_and_args[i+1])
@@ -243,7 +227,6 @@ int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int n
 						exit(127);
 					}
 					dup2(fd1, STDIN_FILENO);
-					// dup standart input from cmd_and_args[i+1];
 					i++;
 				}
 				else
@@ -286,7 +269,6 @@ int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int n
 						exit(127);
 					}
 					dup2(fd2, STDOUT_FILENO);
-					// dup standart input from cmd_and_args[i+1];
 					i++;
 				}
 				else
@@ -296,9 +278,6 @@ int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int n
 					exit(127);
 				} 
 			}
-			// 	// check if(cmd_and_args[i+1]), else error
-			// 	// dup stdout to file cmd_and_args[i+1] in new mode
-			// 	// i++;
 			else if (strings_equal(cmd_and_args[i+1], ">>"))
 			{
 				if(cmd_and_args[i+1])
@@ -311,7 +290,6 @@ int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int n
 						exit(127);
 					}
 					dup2(fd2, STDOUT_FILENO);
-					// dup standart input from cmd_and_args[i+1];
 					i++;
 				}
 				else
@@ -321,9 +299,6 @@ int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int n
 					exit(127);
 				} 
 			}
-				// check if(cmd_and_args[i+1]), else error
-				// dup stdout to file cmd_and_args[i+1]
-				// i++;
 			else
 			{
 					cmd = add_string_to_string_arr(cmd_and_args[i], cmd, cmd_len);
@@ -337,13 +312,6 @@ int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int n
 				no_command(cmd, path, paths);
 			execve(path, cmd, envp);
 	}
-	// i = 0;
-	// while (cmd[i])
-	// {
-	// 	printf("splitted i %d single pipe %s\n", i, cmd[i]);
-	// 	i++;
-	// }
-	// ft_split_clear(cmd);
 	return(1);
 }
 // int	single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **pip,pid_t	*pid, int num, int **pip2)

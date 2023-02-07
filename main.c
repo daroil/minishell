@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/07 12:35:46 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/07 12:53:58 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,8 +242,8 @@ int parse_input(char *input, t_settings *settings,char **envp)
 	splitted_input = split(input, settings);
 	resplitted_input = resplit(splitted_input);
 	// print_splitted(splitted_input);
-	printf("%d\n", count_resplitted(resplitted_input));
-	print_resplitted(resplitted_input);
+	// printf("%d\n", count_resplitted(resplitted_input));
+	// print_resplitted(resplitted_input);
 	// print_dict(settings->env);
 	if (strings_equal(splitted_input[0], "exit"))
 	{
@@ -308,113 +308,44 @@ int parse_input(char *input, t_settings *settings,char **envp)
 	}
 	else 
 	{
-		// pid_t	*pid;
-		// int		number_of_pipes;
-		// int 	**truby;
-		// // int *pip2;
-		// int		i;
+		pid_t	*pid;
+		int		number_of_pipes;
+		int 	**truby;
+		int		i;
 		
-		// number_of_pipes = 3;
-		// pid = malloc(sizeof(pid_t) * (number_of_pipes + 1));
-		// truby = malloc(sizeof(int *) * (number_of_pipes + 1));
-		// i = 0;
-		// while (i < number_of_pipes)
-		// {
-		// 	truby[i] = malloc(sizeof(int) * 2);
-		// 	pipe(truby[i]);
-		// 	i++;
-		// }
-		// truby[i] = NULL;
-		// // pip = malloc(sizeof(int) * 2);
-		// // pip2 = malloc(sizeof(int) * 2);
-		// char ***inp = malloc(sizeof(char **) * 5);
-		// inp[0] = malloc(sizeof(char *) * 3);
-		// inp[1] = malloc(sizeof(char *) * 3);
-		// inp[2] = malloc(sizeof(char *) * 3);
-		// inp[3] = malloc(sizeof(char *) * 5);
-		// inp[0][0] = str_copy("cat\0", -1);
-		// inp[0][1] = str_copy("Makefile\0", -1);
-		// inp[0][2] = NULL;
-		// inp[1][0] = str_copy("grep\0", -1);
-		// inp[1][1] = str_copy("NAME\0", -1);
-		// inp[1][2] = NULL;
-		// inp[2][0] = str_copy("wc\0", -1);
-		// inp[2][1] = str_copy("-l\0", -1);
-		// // inp[2][2] = str_copy(">\0", -1);
-		// // inp[2][3] = str_copy("testing\0", -1);
-		// inp[2][4] = NULL;
-		// inp[3][0] = str_copy("wc\0", -1);
-		// inp[3][1] = str_copy("-l\0", -1);
-		// inp[3][2] = str_copy(">\0", -1);
-		// inp[3][3] = str_copy("testing\0", -1);
-		// inp[3][4] = NULL;
-		// inp[4] = NULL;
-		// // i = 0;
-		// // while(i < number_of_pipes)
-		// // {
-		// // 	pipe(truby[i]);
-		// // 	i++;
-		// // }
-		// // pipe(pip);
-		// // pipe(pip2);
-		// //if(needs pipe)
-		// 	//create pipe
-		// 	//while(number of pipes)
-		// 	//execute single pipe to pipe output
-		// i = 0;
-		// while (i <= number_of_pipes)
-		// {
-		// 	single_pipe_(inp[i], truby, envp, pid, i, number_of_pipes);
-		// 	i++;
-		// }
-		// // single_pipe_(inp[0], 0, pip[1], envp, &pip, pid, 0, &pip2);
-		// // single_pipe_(inp[1], pip[0], pip2[1], envp, &pip, pid, 1, &pip2);
-		// // single_pipe_(inp[2], pip2[0], 1, envp, &pip, pid, 2, &pip2);
-		// i = 0;
-		// while(truby[i])
-		// {
-		// 	close(truby[i][0]);
-		// 	close(truby[i][1]);
-		// 	free(truby[i]);
-		// 	i++;
-		// }
-		// free(truby);
-		// // close(pip[0]);
-		// // close(pip[1]);
-		// // close(pip2[0]);
-		// // close(pip2[1]);
-		// // free(pip);
-		// // free(pip2);
-		// i = 0;
-		// while (number_of_pipes)
-		// {
-		// 	waitpid(pid[number_of_pipes--], NULL, 0);
-		// }
-		// // waitpid(pid[0], NULL, 0);
-		// // waitpid(pid[1], NULL, 0);
-		// // waitpid(pid[2], NULL, 0);
-		// free(pid);
-		// int clear = 0;
-		// while (inp[clear])
-		// {
-		// 	ft_split_clear(inp[clear]);
-		// 	clear++;
-		// }
-		// free(inp);
-		// // printf("finished pipe\n");
-		// // close(pip[1]);
-		// // single_pipe(inp, pip[0], STDOUT_FILENO, envp);
-		// // close(pip[0]);
-		// // pid = fork();
-		// // if (!pid)
-		// // {
-		// // 	paths = get_paths(envp);
-		// // 	path = valid_path(paths, splitted_input[0]);
-		// // 	if (!path)
-		// // 		no_command(splitted_input, path, paths);
-		// // 	execve(path, splitted_input, envp);
-		// // }	
-		// waitpid(pid, NULL, 0);
+		number_of_pipes = count_resplitted(resplitted_input) - 1;
+		pid = malloc(sizeof(pid_t) * (number_of_pipes + 1));
+		truby = malloc(sizeof(int *) * (number_of_pipes + 1));
+		i = 0;
+		while (i < number_of_pipes)
+		{
+			truby[i] = malloc(sizeof(int) * 2);
+			pipe(truby[i]);
+			i++;
+		}
+		truby[i] = NULL;
+		i = 0;
+		while (i <= number_of_pipes)
+		{
+			single_pipe_(resplitted_input[i], truby, envp, pid, i, number_of_pipes);
+			i++;
+		}
+		i = 0;
+		while(truby[i])
+		{
+			close(truby[i][0]);
+			close(truby[i][1]);
+			free(truby[i]);
+			i++;
+		}
+		free(truby);
+		i = 0;
+		while (i <= number_of_pipes)
+		{
+			waitpid(pid[number_of_pipes], NULL, 0);
+			i++;
+		}
+		free(pid);
 		ft_split_clear(splitted_input);
 		free_resplitted(resplitted_input);
 		return (1);

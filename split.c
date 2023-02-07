@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 19:18:48 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/07 12:36:35 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/07 12:43:27 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 				mid_dollar_res = deal_with_double_quotes(input + i + 1, settings);
 				res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
 				i += mid_dollar_res->last_index + 2;
-				printf("%d\n", i);
+				// printf("%d\n", i);
 				res->last_index += mid_dollar_res->last_index + 2;
 				free_next_arg_return(mid_dollar_res);
 			}
@@ -154,7 +154,7 @@ t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 				mid_dollar_res = deal_with_single_quotes(input + i + 1, settings);
 				res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
 				i += mid_dollar_res->last_index + 2;
-				printf("%d\n", i);
+				// printf("%d\n", i);
 				res->last_index = mid_dollar_res->last_index + 1;
 				free_next_arg_return(mid_dollar_res);
 			}
@@ -305,7 +305,7 @@ int		count_resplitted(char ***resplitted)
 void	free_resplitted(char ***resplitted)
 {
 	int i;
-	printf("freeing resplitted\n");
+	// printf("freeing resplitted\n");
 	if (!resplitted)
 		return ;
 	i = 0;
@@ -315,6 +315,6 @@ void	free_resplitted(char ***resplitted)
 		i++;
 	}
 	
-	printf("freed resplitted\n");
+	// printf("freed resplitted\n");
 	free(resplitted);
 }

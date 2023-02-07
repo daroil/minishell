@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/06 21:11:45 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/07 12:35:25 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ void	free_dict(t_dict *dict);
 // printing some stuff functions
 void	print_dict(t_dict *dict);
 void	print_splitted(char **splitted);
+void	print_resplitted(char ***resplitted);
 
 //echo functions
 int	echo(char **args);
@@ -90,6 +91,9 @@ typedef struct next_arg_return_s
 int	is_bash_special_char(char c);
 t_next_arg_return *get_next_arg(char *input, t_settings *settings);
 char **split(char *input, t_settings *settings);
+char ***resplit(char **splitted);
+void	free_resplitted(char ***resplitted);
+int		count_resplitted(char ***resplitted);
 
 //split utils functions
 t_next_arg_return	*init_next_arg(void);

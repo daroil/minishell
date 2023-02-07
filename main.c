@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/07 12:53:58 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/07 14:06:33 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,10 +234,6 @@ void	no_command(char **splitted_input, char *path, char **paths)
 int parse_input(char *input, t_settings *settings,char **envp)
 {
 	char **splitted_input;
-	pid_t	pid;
-	// char	**args;
-	char	*path;
-	char	**paths;
 	char ***resplitted_input;
 	splitted_input = split(input, settings);
 	resplitted_input = resplit(splitted_input);
@@ -308,55 +304,52 @@ int parse_input(char *input, t_settings *settings,char **envp)
 	}
 	else 
 	{
-		pid_t	*pid;
-		int		number_of_pipes;
-		int 	**truby;
-		int		i;
+		t_pipex pipex;
 		
-		number_of_pipes = count_resplitted(resplitted_input) - 1;
-		pid = malloc(sizeof(pid_t) * (number_of_pipes + 1));
-		truby = malloc(sizeof(int *) * (number_of_pipes + 1));
-		i = 0;
-		while (i < number_of_pipes)
+		//pipex init
+		pipex.number_of_pipes = count_resplitted(resplitted_input) - 1;
+		pipex.pid = malloc(sizeof(pid_t) * (pipex.number_of_pipes + 1));
+		pipex.truby = malloc(sizeof(int *) * (pipex.number_of_pipes + 1));
+		pipex.i = 0;
+		while (pipex.i < pipex.number_of_pipes)
 		{
-			truby[i] = malloc(sizeof(int) * 2);
-			pipe(truby[i]);
-			i++;
+			pipex.truby[pipex.i] = malloc(sizeof(int) * 2);
+			pipe(pipex.truby[pipex.i]);
+			pipex.i++;
 		}
-		truby[i] = NULL;
-		i = 0;
-		while (i <= number_of_pipes)
+		pipex.truby[pipex.i] = NULL;
+
+		//executing commands
+		pipex.i = 0;
+		while (pipex.i <= pipex.number_of_pipes)
 		{
-			single_pipe_(resplitted_input[i], truby, envp, pid, i, number_of_pipes);
-			i++;
+			single_pipe(resplitted_input[pipex.i], pipex, envp);
+			pipex.i++;
 		}
-		i = 0;
-		while(truby[i])
+		
+		//cleaning pipes and waiting for children
+		pipex.i = 0;
+		while(pipex.truby[pipex.i])
 		{
-			close(truby[i][0]);
-			close(truby[i][1]);
-			free(truby[i]);
-			i++;
+			close(pipex.truby[pipex.i][0]);
+			close(pipex.truby[pipex.i][1]);
+			free(pipex.truby[pipex.i]);
+			pipex.i++;
 		}
-		free(truby);
-		i = 0;
-		while (i <= number_of_pipes)
+		free(pipex.truby);
+		pipex.i = 0;
+		while (pipex.i <= pipex.number_of_pipes)
 		{
-			waitpid(pid[number_of_pipes], NULL, 0);
-			i++;
+			waitpid(pipex.pid[pipex.number_of_pipes], NULL, 0);
+			pipex.i++;
 		}
-		free(pid);
+		free(pipex.pid);
+		
+		//cleaning input
 		ft_split_clear(splitted_input);
 		free_resplitted(resplitted_input);
 		return (1);
 	}
-	// else
-	// {
-	// 	printf("%s is an unknown command\n", splitted_input[0]);
-	// 	settings->last_exit_status = 127;
-	// 	ft_split_clear(splitted_input);
-	// 	return (1);
-	// }
 }
 
 

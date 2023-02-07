@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/07 14:06:30 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/07 14:11:21 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 	pid[num] = fork();
 	if (!pid[num])
 	{
+		//doing pipes if needed
 		if (size)
 		{
 			if (num == 0)
@@ -210,10 +211,13 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 			}
 			close_truby(truby, num, size);
 		}
+		
+		//allocating memory for command
 		cmd = malloc(sizeof(char *));
 		cmd[0] = NULL;
 		while (cmd_and_args[i])
 		{
+			//check if infile should be duped
 			if (strings_equal(cmd_and_args[i], "<"))
 			{
 				if(cmd_and_args[i+1])
@@ -235,6 +239,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 					exit(127);
 				} 
 			}
+			//check if here_doc
 			else if (strings_equal(cmd_and_args[i], "<<"))
 			{
 				if(cmd_and_args[i+1])
@@ -267,6 +272,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 					exit(127);
 				} 
 			}
+			//check if outfile is changed
 			else if (strings_equal(cmd_and_args[i], ">"))
 			{
 				if(cmd_and_args[i+1])
@@ -288,6 +294,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 					exit(127);
 				} 
 			}
+			//check if outfile is in append mode
 			else if (strings_equal(cmd_and_args[i+1], ">>"))
 			{
 				if(cmd_and_args[i+1])
@@ -309,6 +316,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 					exit(127);
 				} 
 			}
+			//adding to command line
 			else
 			{
 					cmd = add_string_to_string_arr(cmd_and_args[i], cmd, cmd_len);
@@ -316,6 +324,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 			}
 			i++;
 		}
+		//check if command exists and executing it
 		paths = get_paths(envp);
 		path = valid_path(paths, cmd[0]);
 		if (!path)

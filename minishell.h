@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/07 14:06:43 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/07 14:08:26 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ char	*valid_path(char **paths, char *filename);
 // int		single_pipe(char **splitted_input, int fd_in, int fd_out, char **envp);
 // int		single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **pip, pid_t	*pid, int num, int **pip2);
 // int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int num, int size);
-int	single_pipe(char **cmd_and_args,t_pipex pipex, char **envp);
+int		single_pipe(char **cmd_and_args,t_pipex pipex, char **envp);
 char	*repeat_line_n_times(char *str, int n);
 
 #endif

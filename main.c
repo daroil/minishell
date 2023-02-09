@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/09 19:04:06 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/09 19:14:20 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,6 +323,7 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		t_pipex pipex;
 		
 		//pipex init
+		// char **nash_env = build();
 		change_ctrl_c();
 		pipex.number_of_pipes = count_resplitted(resplitted_input) - 1;
 		pipex.pid = malloc(sizeof(pid_t) * (pipex.number_of_pipes + 1));

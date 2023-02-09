@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/09 15:42:52 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/09 19:04:06 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,6 +220,20 @@ int	check_path(char **envp, char *splitted_input)
 	return (1);
 }
 
+int	string_in_array_of_strings(char *string, char **array)
+{
+	int	i;
+
+	i = 0;
+	while (array[i])
+	{
+		if (strings_equal(array[i], string))
+			return(1);
+		i++;
+	}
+	return (0);
+}
+
 void	no_command(char **splitted_input, char *path, char **paths)
 {
 	ft_putstr_fd(splitted_input[0], STDERR_FILENO);
@@ -327,6 +341,8 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		while (pipex.i <= pipex.number_of_pipes)
 		{
 			single_pipe(resplitted_input[pipex.i], pipex, envp);
+			if (string_in_array_of_strings("<<", resplitted_input[pipex.i]))
+				waitpid(pipex.pid[pipex.i], NULL, 0);
 			pipex.i++;
 		}
 		
@@ -347,9 +363,9 @@ int parse_input(char *input, t_settings *settings,char **envp)
 			pipex.i++;
 		}
 		free(pipex.pid);
-		
 		//cleaning input
-		change_ctrl_c();
+		disable_ctrlc();
+		// change_ctrl_c();
 		ft_split_clear(splitted_input);
 		free_resplitted(resplitted_input);
 		return (1);
@@ -365,6 +381,7 @@ void	finish(t_settings *settings, char *input)
 
 void	my_readline(t_settings *settings);
 
+
 void	interrupt_input(int sig)
 {
 	// printf("\nint interrupt 1\n");
@@ -372,6 +389,7 @@ void	interrupt_input(int sig)
 	rl_replace_line("\0", 0);
 	printf("\n");
 	rl_redisplay();
+	waitpid(-1, NULL, 0);
 	// printf("int interrupt 2\n");
 	// my_readline(NULL);
 }
@@ -383,7 +401,8 @@ void	my_readline(t_settings *settings)
 	
 	if (!local_settings)
 		local_settings = settings;
-	prompt = ft_str_join_free_first(cur_dir(), "> \0");
+	prompt = ft_str_join_free_both(str_copy("\r\0", -1), ft_str_join_free_first(cur_dir(), "> \0"));
+	// prompt = ft_str_join_free_first(cur_dir(), "> \0");
 	local_settings->input = readline(prompt);
 	free(prompt);
 }
@@ -396,19 +415,11 @@ void restore(void) {
 
 void	disable_ctrlc(void)
 {
-	static struct termios* term_state = NULL;
-	printf("2.2\n");
-	if (!term_state)
-		term_state = malloc(sizeof(struct termios *));
-	printf("2.3\n");
-	tcgetattr(STDIN_FILENO,term_state);
-	printf("2.4\n");
-	term_state->c_lflag = ECHO;
-	printf("2.5\n");
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, term_state);
-	printf("2.6\n");
-	// free(term_state);
-	printf("2.7\n");
+	struct	termios term;
+	tcgetattr(STDIN_FILENO, &term);
+	if (term.c_lflag & ECHOCTL)
+		term.c_lflag ^= ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSAFLUSH, &term);
 }
 
 void	change_ctrl_c(void)
@@ -443,7 +454,8 @@ void	shell(char *envp[])
 	t_settings *settings;
 
 	settings = create_setttings(envp);
-	change_ctrl_c();
+	// change_ctrl_c();
+	disable_ctrlc();
 	settings->last_working_directory = cur_dir();
 	signal(SIGINT, interrupt_input);
 	my_readline(settings);

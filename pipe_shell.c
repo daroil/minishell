@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/09 15:59:18 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/09 19:05:02 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,16 @@ void	close_truby(int **truby, int cur, int len)
 	}
 }
 
+void	interrupt_input_doc(int sig)
+{
+	// printf("\nint interrupt 1\n");
+	printf("\r");
+	exit(127);
+	// printf("int interrupt 2\n");
+	// my_readline(NULL);
+}
+
+
 int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 {
 	char	**cmd;
@@ -248,6 +258,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 					char *buf;
 					
 					pipe(heredoc_pipe);
+					signal(SIGINT, interrupt_input_doc);
 					read_from_to_shell(cmd_and_args[i+1], STDIN_FILENO, heredoc_pipe[1]);
 					close(heredoc_pipe[1]);
 					if (!cmd_and_args[i-1])
@@ -327,6 +338,8 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 		//check if command exists and executing it
 		paths = get_paths(envp);
 		path = valid_path(paths, cmd[0]);
+		// if (strings_equal(cmd[0], "cd"))
+		// 	no_command(cmd, path, paths);
 		if (!path)
 			no_command(cmd, path, paths);
 		execve(path, cmd, envp);

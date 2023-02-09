@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 16:25:31 by sbritani          #+#    #+#             */
-/*   Updated: 2023/01/25 19:05:36 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/09 19:30:23 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,4 +86,20 @@ void	free_dict(t_dict *dict)
 	free(dict->keys);
 	free(dict->values);
 	free(dict);
+}
+
+
+char	**unite_env(t_dict *dict)
+{
+	int i;
+	char **res;
+
+	res = NULL;
+	i = 0;
+	while (i < dict->len)
+	{
+		res = add_string_to_string_arr(ft_str_join_free_both(ft_str_join_free_first(str_copy(dict->keys[i], -1), "=\0"), str_copy(dict->values[i], -1)), res, i);
+		i++;
+	}
+	return (res);
 }

@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/09 15:39:07 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/09 19:25:40 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void	dict_add(t_dict *dict, char *key, char *value);
 char	*dict_get(t_dict *dict, char *key, char *default_return);
 void	dict_delete(t_dict *dict, char *key);
 void	free_dict(t_dict *dict);
+char	**unite_env(t_dict *dict);
 
 // printing some stuff functions
 void	print_dict(t_dict *dict);

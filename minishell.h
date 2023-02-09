@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/07 17:32:54 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/09 15:39:07 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,9 @@ char		**remove_string_from_str_arr(char **arr, int n);
 char		*str_copy(char *str, int n);
 char		*ft_str_join_free_both(char *str1, char *str2);
 
+void	disable_ctrlc(void);
+void	enable_ctrlc(void);
+
 // dict funcitons
 t_dict	*init_dict(void);
 void	dict_add(t_dict *dict, char *key, char *value);
@@ -75,6 +78,9 @@ void	free_dict(t_dict *dict);
 void	print_dict(t_dict *dict);
 void	print_splitted(char **splitted);
 void	print_resplitted(char ***resplitted);
+
+// changing stty
+void	change_ctrl_c(void);
 
 //echo functions
 int	echo(char **args);

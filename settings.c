@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 20:50:23 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/07 17:13:16 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/07 19:40:34 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ t_settings	*create_setttings(char **env)
 	res->env = init_dict();
 	res->exported_env = init_dict();
 	res->last_cmd = NULL;
-	res->term_state = NULL;
 	parse_env(env, res);
 	return (res);
 }

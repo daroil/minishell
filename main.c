@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/07 17:32:24 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/09 15:42:52 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,6 @@ int	export(char **splitted_input, t_settings *settings)
 		// print_splitted(temp);
 		if (temp[1])
 		{
-			printf("tuta\n");
 			dict_add(settings->env, temp[0], temp[1]);
 			dict_add(settings->exported_env, temp[0], temp[1]);
 		}
@@ -310,6 +309,7 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		t_pipex pipex;
 		
 		//pipex init
+		change_ctrl_c();
 		pipex.number_of_pipes = count_resplitted(resplitted_input) - 1;
 		pipex.pid = malloc(sizeof(pid_t) * (pipex.number_of_pipes + 1));
 		pipex.truby = malloc(sizeof(int *) * (pipex.number_of_pipes + 1));
@@ -349,6 +349,7 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		free(pipex.pid);
 		
 		//cleaning input
+		change_ctrl_c();
 		ft_split_clear(splitted_input);
 		free_resplitted(resplitted_input);
 		return (1);
@@ -393,23 +394,46 @@ void restore(void) {
     tcsetattr(STDIN_FILENO, TCSANOW, &saved);
 }
 
-void	disable_ctrlc(t_settings *settings)
-{	
-	settings->term_state = malloc(sizeof(struct termios *));
-	tcgetattr(STDIN_FILENO, settings->term_state);
-	settings->term_state->c_lflag &= ECHO;
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, settings->term_state);
-	free(settings->term_state);
-	settings->term_state = NULL;
-}
-void	enable_ctrlc(t_settings *settings)
+void	disable_ctrlc(void)
 {
-	settings->term_state = malloc(sizeof(struct termios *));
-	tcgetattr(STDIN_FILENO, settings->term_state);
-	settings->term_state->c_lflag = ECHOCTL | ECHO | ECHOE | ECHOKE | ICANON | ISIG | IEXTEN | PENDIN;
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, settings->term_state);
-	free(settings->term_state);
-	settings->term_state = NULL;
+	static struct termios* term_state = NULL;
+	printf("2.2\n");
+	if (!term_state)
+		term_state = malloc(sizeof(struct termios *));
+	printf("2.3\n");
+	tcgetattr(STDIN_FILENO,term_state);
+	printf("2.4\n");
+	term_state->c_lflag = ECHO;
+	printf("2.5\n");
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, term_state);
+	printf("2.6\n");
+	// free(term_state);
+	printf("2.7\n");
+}
+
+void	change_ctrl_c(void)
+{
+	struct	termios term;
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag ^= ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSAFLUSH, &term);
+}
+void	enable_ctrlc(void)
+{
+	printf("1\n");
+	static struct termios* term_state = NULL;
+	printf("2\n");
+	if (!term_state)
+		term_state = malloc(sizeof(struct termios *));
+	printf("3\n");
+	tcgetattr(STDIN_FILENO,term_state);
+	printf("4\n");
+	term_state->c_lflag = ECHOCTL | ECHO | ECHOE | ECHOKE | ICANON | ISIG | IEXTEN | PENDIN;
+	printf("5\n");
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, term_state);
+	printf("6\n");
+	// free(term_state);
+	printf("7\n");
 }
 
 
@@ -419,8 +443,7 @@ void	shell(char *envp[])
 	t_settings *settings;
 
 	settings = create_setttings(envp);
-	disable_ctrlc(settings);
-	// enable_ctrlc(settings);
+	change_ctrl_c();
 	settings->last_working_directory = cur_dir();
 	signal(SIGINT, interrupt_input);
 	my_readline(settings);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_shell.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/07 19:20:10 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/09 15:59:18 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,7 +250,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 					pipe(heredoc_pipe);
 					read_from_to_shell(cmd_and_args[i+1], STDIN_FILENO, heredoc_pipe[1]);
 					close(heredoc_pipe[1]);
-					if (!cmd_and_args[i+2])
+					if (!cmd_and_args[i-1])
 					{
 						buf = get_next_line(heredoc_pipe[0]);
 						while (buf)

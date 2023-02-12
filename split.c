@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 19:18:48 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/07 12:43:27 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/12 17:24:42 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,12 +202,13 @@ char **split(char *input, t_settings *settings)
 	res = malloc(sizeof(char *));
 	res[0] = NULL;
 	i = 0;
-	len=0;
+	len = 0;
 	while (input[i])
 	{
 		next_arg = get_next_arg(input + i, settings);
 		i += next_arg->last_index;
 		res = add_string_to_string_arr(next_arg->arg, res, len);
+		res = add_wild_matches_if_needed(res, len);
 		free_next_arg_return(next_arg);
 		len++;
 	}

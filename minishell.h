@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/09 19:25:40 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/12 16:18:32 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <sys/uio.h>
-
+# include <dirent.h>
 
 typedef struct dict_s
 {
@@ -130,5 +130,10 @@ char	*valid_path(char **paths, char *filename);
 // int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int num, int size);
 int		single_pipe(char **cmd_and_args,t_pipex pipex, char **envp);
 char	*repeat_line_n_times(char *str, int n);
+
+// wild stuf
+int matches_wild(char *str, char *wild);
+char	**my_ls();
+char	**add_wild_matches_if_needed(char **splitted_input, int len_splitted);
 
 #endif

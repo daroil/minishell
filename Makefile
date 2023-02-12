@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+         #
+#    By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 18:04:41 by sbritani          #+#    #+#              #
-#    Updated: 2023/02/06 19:54:52 by dhendzel         ###   ########.fr        #
+#    Updated: 2023/02/12 16:20:13 by sbritani         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ SRCS =	main.c\
 		split_utils.c\
 		echo.c\
 		pipe_shell.c \
+		my_ls.c \
 		libft/libft.a
 
 NAME =  shell

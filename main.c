@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/12 17:25:16 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/13 13:32:53 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,73 +267,130 @@ int parse_input(char *input, t_settings *settings,char **envp)
 	// printf("%d\n", count_resplitted(resplitted_input));
 	// print_resplitted(resplitted_input);
 	// print_dict(settings->env);
-	if (strings_equal(splitted_input[0], "exit"))
+	if (count_resplitted(resplitted_input) == 1)
 	{
-		ft_split_clear(splitted_input);
-		free_resplitted(resplitted_input);
-		return (0);
-	}
-	if (!splitted_input[0])
-	{
-		ft_split_clear(splitted_input);
-		free_resplitted(resplitted_input);
-		return (1);
-	}
-	if (strings_equal(splitted_input[0], "echo\0"))
-	{
-		settings->last_exit_status = echo(splitted_input + 1);
-		ft_split_clear(splitted_input);
-		free_resplitted(resplitted_input);
-		return (1);
-	}
-	if (strings_equal(splitted_input[0], "pwd\0"))
-	{
-		settings->last_exit_status = pwd(splitted_input);
-		ft_split_clear(splitted_input);
-		free_resplitted(resplitted_input);
-		return (1);
-	}
-	if (strings_equal(splitted_input[0], "cd\0"))
-	{
-		settings->last_exit_status = cd(splitted_input, settings);
-		ft_split_clear(splitted_input);
-		free_resplitted(resplitted_input);
-		return (1);
-	}
-	if (strings_equal(splitted_input[0], "env\0"))
-	{
-		settings->last_exit_status = env(splitted_input, settings);
-		ft_split_clear(splitted_input);
-		free_resplitted(resplitted_input);
-		return (1);
-	}
-	if (strings_equal(splitted_input[0], "unset\0"))
-	{
-		settings->last_exit_status = unset(splitted_input, settings);
-		ft_split_clear(splitted_input);
-		free_resplitted(resplitted_input);
-		return (1);
-	}
-	if (strings_equal(splitted_input[0], "export\0"))
-	{
-		settings->last_exit_status = export(splitted_input, settings);
-		ft_split_clear(splitted_input);
-		free_resplitted(resplitted_input);
-		return (1);
-	}
-	if (ft_strchr(splitted_input[0], '='))
-	{
-		settings->last_exit_status = deal_with_equal_sign(splitted_input, settings);
-		ft_split_clear(splitted_input);
-		free_resplitted(resplitted_input);
-		return (1);
+		if (strings_equal(splitted_input[0], "exit"))
+		{
+			ft_split_clear(splitted_input);
+			free_resplitted(resplitted_input);
+			return (0);
+		}
+		if (!splitted_input[0])
+		{
+			ft_split_clear(splitted_input);
+			free_resplitted(resplitted_input);
+			return (1);
+		}
+		if (strings_equal(splitted_input[0], "echo\0"))
+		{
+			settings->last_exit_status = echo(splitted_input + 1);
+			ft_split_clear(splitted_input);
+			free_resplitted(resplitted_input);
+			return (1);
+		}
+		if (strings_equal(splitted_input[0], "pwd\0"))
+		{
+			settings->last_exit_status = pwd(splitted_input);
+			ft_split_clear(splitted_input);
+			free_resplitted(resplitted_input);
+			return (1);
+		}
+		if (strings_equal(splitted_input[0], "cd\0"))
+		{
+			settings->last_exit_status = cd(splitted_input, settings);
+			ft_split_clear(splitted_input);
+			free_resplitted(resplitted_input);
+			return (1);
+		}
+		if (strings_equal(splitted_input[0], "env\0"))
+		{
+			settings->last_exit_status = env(splitted_input, settings);
+			ft_split_clear(splitted_input);
+			free_resplitted(resplitted_input);
+			return (1);
+		}
+		if (strings_equal(splitted_input[0], "unset\0"))
+		{
+			settings->last_exit_status = unset(splitted_input, settings);
+			ft_split_clear(splitted_input);
+			free_resplitted(resplitted_input);
+			return (1);
+		}
+		if (strings_equal(splitted_input[0], "export\0"))
+		{
+			settings->last_exit_status = export(splitted_input, settings);
+			ft_split_clear(splitted_input);
+			free_resplitted(resplitted_input);
+			return (1);
+		}
+		if (ft_strchr(splitted_input[0], '='))
+		{
+			settings->last_exit_status = deal_with_equal_sign(splitted_input, settings);
+			ft_split_clear(splitted_input);
+			free_resplitted(resplitted_input);
+			return (1);
+		}
+		else 
+		{
+			t_pipex pipex;
+			char **something = unite_env(settings->exported_env);
+			//pipex init
+			// char **nash_env = build();
+			change_ctrl_c();
+			pipex.number_of_pipes = count_resplitted(resplitted_input) - 1;
+			pipex.pid = malloc(sizeof(pid_t) * (pipex.number_of_pipes + 1));
+			pipex.truby = malloc(sizeof(int *) * (pipex.number_of_pipes + 1));
+			pipex.i = 0;
+			while (pipex.i < pipex.number_of_pipes)
+			{
+				pipex.truby[pipex.i] = malloc(sizeof(int) * 2);
+				pipe(pipex.truby[pipex.i]);
+				pipex.i++;
+			}
+			pipex.truby[pipex.i] = NULL;
+
+			//executing commands
+			pipex.i = 0;
+			while (pipex.i <= pipex.number_of_pipes)
+			{
+				single_pipe(resplitted_input[pipex.i], pipex, something);
+				if (string_in_array_of_strings("<<", resplitted_input[pipex.i]))
+					waitpid(pipex.pid[pipex.i], NULL, 0);
+				pipex.i++;
+			}
+			
+			//cleaning pipes and waiting for children
+			pipex.i = 0;
+			while(pipex.truby[pipex.i])
+			{
+				close(pipex.truby[pipex.i][0]);
+				close(pipex.truby[pipex.i][1]);
+				free(pipex.truby[pipex.i]);
+				pipex.i++;
+			}
+			free(pipex.truby);
+			pipex.i = 0;
+			while (pipex.i <= pipex.number_of_pipes)
+			{
+				waitpid(pipex.pid[pipex.number_of_pipes], NULL, 0);
+				pipex.i++;
+			}
+			free(pipex.pid);
+			//cleaning input
+			disable_ctrlc();
+			// change_ctrl_c();
+			ft_split_clear(splitted_input);
+			ft_split_clear(something);
+			free_resplitted(resplitted_input);
+			return (1);
+		}
 	}
 	else 
 	{
 		t_pipex pipex;
-		
 		//pipex init
 		// char **nash_env = build();
+		char **something = unite_env(settings->exported_env);
 		change_ctrl_c();
 		pipex.number_of_pipes = count_resplitted(resplitted_input) - 1;
 		pipex.pid = malloc(sizeof(pid_t) * (pipex.number_of_pipes + 1));
@@ -351,7 +408,7 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		pipex.i = 0;
 		while (pipex.i <= pipex.number_of_pipes)
 		{
-			single_pipe(resplitted_input[pipex.i], pipex, envp);
+			single_pipe(resplitted_input[pipex.i], pipex, something);
 			if (string_in_array_of_strings("<<", resplitted_input[pipex.i]))
 				waitpid(pipex.pid[pipex.i], NULL, 0);
 			pipex.i++;
@@ -378,6 +435,7 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		disable_ctrlc();
 		// change_ctrl_c();
 		ft_split_clear(splitted_input);
+		ft_split_clear(something);
 		free_resplitted(resplitted_input);
 		return (1);
 	}

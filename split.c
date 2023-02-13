@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 19:18:48 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/12 17:24:42 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/13 13:14:29 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,8 +209,9 @@ char **split(char *input, t_settings *settings)
 		i += next_arg->last_index;
 		res = add_string_to_string_arr(next_arg->arg, res, len);
 		res = add_wild_matches_if_needed(res, len);
+		while (res && res[len])
+			len++;
 		free_next_arg_return(next_arg);
-		len++;
 	}
 	//for i in res:
 	//		if i == "|"

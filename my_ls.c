@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   my_ls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/12 16:10:29 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/12 17:24:14 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/13 13:12:36 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,10 @@ char **get_all_matching_files(char *wild)
 		}
 		i++;
 	}
-	ft_split_clear(mid);
+	if (mid && mid[0])
+		ft_split_clear(mid);
+	else if(mid)
+		free(mid);
 	return (res);
 }
 
@@ -87,18 +90,19 @@ char	**add_wild_matches_if_needed(char **splitted_input, int len_splitted)
 	int	i;
 	char **mid;
 	
-	if (ft_str_chr(splitted_input[len_splitted], '*'))
+	if (splitted_input[len_splitted] && ft_str_chr(splitted_input[len_splitted], '*'))
 	{
 		mid = get_all_matching_files(splitted_input[len_splitted]);
 		free(splitted_input[len_splitted]);
 		splitted_input[len_splitted] = NULL;
 		i = 0;
-		while (mid[i])
+		while (mid && mid[i])
 		{
 			splitted_input = add_string_to_string_arr(mid[i], splitted_input, len_splitted + i);
 			i++;
 		}
-		ft_split_clear(mid);
+		if (mid)
+			ft_split_clear(mid);
 	}
 	return (splitted_input);
 }

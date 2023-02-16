@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/13 12:52:49 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:19:28 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,26 +201,14 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 	int num = pipex.i;
 	int size = pipex.number_of_pipes;
 	int **truby = pipex.truby;
+	int heredoc;
 
+	heredoc = 0;
 	int i = 0;
 	cmd_len = 0;
 	pid[num] = fork();
 	if (!pid[num])
 	{
-		//doing pipes if needed
-		if (size)
-		{
-			if (num == 0)
-				dup2(truby[0][1], STDOUT_FILENO);
-			else if (num == size)
-				dup2(truby[num - 1][0], STDIN_FILENO);
-			else
-			{
-				dup2(truby[num - 1][0], STDIN_FILENO);
-				dup2(truby[num][1], STDOUT_FILENO);
-			}
-			close_truby(truby, num, size);
-		}
 		
 		//allocating memory for command
 		cmd = malloc(sizeof(char *));
@@ -252,6 +240,8 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 			//check if here_doc
 			else if (strings_equal(cmd_and_args[i], "<<"))
 			{
+
+				heredoc = 1;
 				if(cmd_and_args[i+1])
 				{
 					int	heredoc_pipe[2];
@@ -261,7 +251,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 					signal(SIGINT, interrupt_input_doc);
 					read_from_to_shell(cmd_and_args[i+1], STDIN_FILENO, heredoc_pipe[1]);
 					close(heredoc_pipe[1]);
-					if (!cmd_and_args[i-1])
+					if (!cmd_and_args[i+2])
 					{
 						buf = get_next_line(heredoc_pipe[0]);
 						while (buf)
@@ -270,7 +260,8 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 							free(buf);
 							buf = get_next_line(heredoc_pipe[0]);
 						}
-						free(buf);	
+						free(buf);
+						close(heredoc_pipe[0]);	
 					}
 					else
 						dup2(heredoc_pipe[0], STDIN_FILENO);
@@ -334,6 +325,22 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 					cmd_len++;
 			}
 			i++;
+		}
+		// doing pipes if needed
+		if (size)
+		{
+			if (num == 0)
+				dup2(truby[0][1], STDOUT_FILENO);
+			else if (num == size && !heredoc)
+				dup2(truby[num - 1][0], STDIN_FILENO);
+			else
+			{
+				if (!heredoc)
+					dup2(truby[num - 1][0], STDIN_FILENO);
+				if (num != size)
+					dup2(truby[num][1], STDOUT_FILENO);
+			}
+			close_truby(truby, num, size);
 		}
 		//check if command exists and executing it
 		paths = get_paths(envp);

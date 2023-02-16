@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/16 17:27:36 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:49:36 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,6 @@ int	array_len(char **array)
 	i = 0;
 	while(array[i])
 		i++;
-	// ft_putnbr_fd(i,2);
 	return(i);
 }
 
@@ -212,9 +211,11 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 	int num = pipex.i;
 	int size = pipex.number_of_pipes;
 	int **truby = pipex.truby;
-	int heredoc;
+	int redirect_input;
+	int redirect_output;
 
-	heredoc = 0;
+	redirect_input = 0;
+	redirect_output = 0;
 	int i = 0;
 	cmd_len = 0;
 	pid[num] = fork();
@@ -229,6 +230,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 			//check if infile should be duped
 			if (strings_equal(cmd_and_args[i], "<"))
 			{
+				redirect_input = 1;
 				if(cmd_and_args[i+1])
 				{
 					fd1 = open(cmd_and_args[i+1], O_RDONLY);
@@ -252,7 +254,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 			else if (strings_equal(cmd_and_args[i], "<<"))
 			{
 
-				heredoc = 1;
+				redirect_input = 1;
 				if(cmd_and_args[i+1])
 				{
 					int	heredoc_pipe[2];
@@ -288,6 +290,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 			//check if outfile is changed
 			else if (strings_equal(cmd_and_args[i], ">"))
 			{
+				redirect_output = 1;
 				if(cmd_and_args[i+1])
 				{
 					fd2 = open(cmd_and_args[i+1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
@@ -310,6 +313,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 			//check if outfile is in append mode
 			else if (strings_equal(cmd_and_args[i+1], ">>"))
 			{
+				redirect_output = 1;
 				if(cmd_and_args[i+1])
 				{
 					fd2 = open(cmd_and_args[i+1], O_RDWR | O_CREAT | O_APPEND, 0644);
@@ -340,15 +344,15 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 		// doing pipes if needed
 		if (size)
 		{
-			if (num == 0)
+			if (num == 0 && !redirect_output)
 				dup2(truby[0][1], STDOUT_FILENO);
-			else if (num == size && !heredoc)
+			else if (num == size && !redirect_input)
 				dup2(truby[num - 1][0], STDIN_FILENO);
 			else
 			{
-				if (!heredoc)
+				if (!redirect_input)
 					dup2(truby[num - 1][0], STDIN_FILENO);
-				if (num != size)
+				if (num != size && !redirect_output)
 					dup2(truby[num][1], STDOUT_FILENO);
 			}
 			close_truby(truby, num, size);

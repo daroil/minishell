@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/16 16:59:39 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:32:41 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -467,7 +467,7 @@ void	finish(t_settings *settings, char *input)
 
 void	my_readline(t_settings *settings);
 
-void	kill_children(t_settings *settings, int to_kill)
+void	kill_children(t_settings *settings, int to_kill, int sig)
 {
 	static t_settings *local_settings = NULL;
 	int i;
@@ -476,10 +476,12 @@ void	kill_children(t_settings *settings, int to_kill)
 		local_settings = settings;
 	if (to_kill && local_settings->pipex && local_settings->pipex->pid)
 	{
+		if (sig == SIGQUIT)
+			printf("Quit: 3\n");
 		i = 0;
 		while (local_settings->pipex->pid[i])
 			{
-				kill(local_settings->pipex->pid[i], SIGINT);
+				kill(local_settings->pipex->pid[i], sig);
 				i++;
 			}
 	}
@@ -488,12 +490,19 @@ void	kill_children(t_settings *settings, int to_kill)
 void	interrupt_input(int sig)
 {
 	// printf("\nint interrupt 1\n");
-	rl_on_new_line();
-	kill_children(NULL, 1);
-	rl_replace_line("\0", 0);
-	printf("\n");
-	rl_redisplay();
-	waitpid(-1, NULL, 0);
+	kill_children(NULL, 1, sig);
+	if (sig == SIGINT)
+	{
+		rl_on_new_line();
+		rl_replace_line("\0", 0);
+		printf("\n");
+		rl_redisplay();
+	}
+	if (sig == SIGQUIT)
+	{
+		rl_redisplay();
+		printf("\b");
+	}
 	// printf("int interrupt 2\n");
 	// my_readline(NULL);
 }
@@ -558,11 +567,12 @@ void	shell(char *envp[])
 	t_settings *settings;
 
 	settings = create_setttings(envp);
-	kill_children(settings, 0);
+	kill_children(settings, 0, 0);
 	// change_ctrl_c();
 	disable_ctrlc();
 	settings->last_working_directory = cur_dir();
 	signal(SIGINT, interrupt_input);
+	signal(SIGQUIT, interrupt_input);
 	my_readline(settings);
 	if (!parse_input(settings->input, settings, envp))
 		return (finish(settings, settings->input));

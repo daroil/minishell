@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 19:18:48 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/16 13:31:52 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/16 14:59:35 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,12 @@ t_next_arg_return	*deal_with_double_quotes(char *input, t_settings *settings)
 			return (res);
 	}
 	if (!input[i])
-	free_next_arg_return(res);
-	res = init_next_arg();
+	{
+		free_next_arg_return(res);
+		res = init_next_arg();
+		res->last_index = i;
+		return (res);
+	}
 	res->last_index = i;
 	return (res);
 }
@@ -145,7 +149,7 @@ t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 				mid_dollar_res = deal_with_double_quotes(input + i + 1, settings);
 				res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
 				i += mid_dollar_res->last_index + 2;
-				// printf("%d\n", i);
+				printf("%p\n", res->arg);
 				res->last_index += mid_dollar_res->last_index + 2;
 				free_next_arg_return(mid_dollar_res);
 			}
@@ -155,7 +159,7 @@ t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 				res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
 				i += mid_dollar_res->last_index + 2;
 				// printf("%d\n", i);
-				res->last_index = mid_dollar_res->last_index + 1;
+				res->last_index += mid_dollar_res->last_index + 1;
 				free_next_arg_return(mid_dollar_res);
 			}
 			else if (input[i] == '|')
@@ -174,6 +178,7 @@ t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 	{
 		free_next_arg_return(res);
 		res = deal_with_double_quotes(input + start + 1, settings);
+				printf("%p\n", res->arg);
 		res->last_index += start + 2;
 	}
 	if(input[start] && input[start] == '\'')
@@ -203,11 +208,12 @@ char **split(char *input, t_settings *settings)
 	res[0] = NULL;
 	i = 0;
 	len = 0;
-	while (input[i])
+	while (input[i] && (i <= 0 || input[i - 1]))
 	{
 		next_arg = get_next_arg(input + i, settings);
 		i += next_arg->last_index;
 		res = add_string_to_string_arr(next_arg->arg, res, len);
+		printf("%d %s %p\n", i, res[1], res[1]);
 		res = add_wild_matches_if_needed(res, len);
 		while (res && res[len])
 			len++;
@@ -216,6 +222,7 @@ char **split(char *input, t_settings *settings)
 	//for i in res:
 	//		if i == "|"
 	//			join
+	printf("%p\n", res[1]);
 	return (res);
 }
 

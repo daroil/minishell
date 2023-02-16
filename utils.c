@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 18:43:10 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/07 12:28:10 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/16 14:50:33 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ char	*ft_str_join_free_first(char *str1, char *str2)
 
 	len1 = ft_strlen(str1);
 	len2 = ft_strlen(str2);
+	if (!str1 && !str2)
+		return NULL;
 	res = malloc(sizeof(char) * (len1 + len2 + 1));
 	i = -1;
 	if (str1)
@@ -48,6 +50,8 @@ char	*ft_str_join_free_both(char *str1, char *str2)
 
 	len1 = ft_strlen(str1);
 	len2 = ft_strlen(str2);
+	if (!str1 && !str2)
+		return NULL;
 	res = malloc(sizeof(char) * (len1 + len2 + 1));
 	i = -1;
 	if (str1)

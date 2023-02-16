@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/16 17:19:28 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:27:36 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,17 @@ void	interrupt_input_doc(int sig)
 	// my_readline(NULL);
 }
 
+int	array_len(char **array)
+{
+	int i;
+
+	i = 0;
+	while(array[i])
+		i++;
+	// ft_putnbr_fd(i,2);
+	return(i);
+}
+
 
 int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 {
@@ -251,7 +262,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 					signal(SIGINT, interrupt_input_doc);
 					read_from_to_shell(cmd_and_args[i+1], STDIN_FILENO, heredoc_pipe[1]);
 					close(heredoc_pipe[1]);
-					if (!cmd_and_args[i+2])
+					if (array_len(cmd_and_args) == 2)
 					{
 						buf = get_next_line(heredoc_pipe[0]);
 						while (buf)

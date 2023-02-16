@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 19:18:48 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/13 13:14:29 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/16 13:31:52 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	is_bash_special_char(char c)
 {
 	int			i;
-	static char	special_chars[] = "'\"$&=| \0";
+	static char	special_chars[] = "'\"$=| \0";
 
 	i = 0;
 	while (special_chars[i])

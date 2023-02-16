@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/13 13:32:53 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/16 13:48:05 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 char *cur_dir(void)
 {
 	char *res;
-	res = malloc(sizeof(char) * 100);
-	if (!getcwd(res, 100))
+	res = malloc(sizeof(char) * 1000);
+	if (!getcwd(res, 1000))
 	{
 		free(res);
 		return (NULL);
@@ -42,10 +42,15 @@ int	pwd(char **splitted_input)
 int cd(char **splitted_input, t_settings *settings)
 {
 	char *temp;
+	char *other_temp;
 	if (!splitted_input[1])
 	{
 		settings->last_working_directory = cur_dir();
 		chdir("/");
+		dict_add(settings->exported_env, "OLDPWD\0",settings->last_working_directory);
+		other_temp = cur_dir();
+		dict_add(settings->exported_env, "PWD\0", other_temp);
+		free(other_temp);
 		return (0);
 	}
 	if (strings_equal(splitted_input[1], "-\0"))
@@ -53,6 +58,10 @@ int cd(char **splitted_input, t_settings *settings)
 		temp = settings->last_working_directory;
 		settings->last_working_directory = cur_dir();
 		chdir(temp);
+		dict_add(settings->exported_env, "OLDPWD\0", settings->last_working_directory);
+		other_temp = cur_dir();
+		dict_add(settings->exported_env, "PWD\0", other_temp);
+		free(other_temp);
 		free(temp);
 		return (0);
 	}
@@ -61,6 +70,10 @@ int cd(char **splitted_input, t_settings *settings)
 		free(settings->last_working_directory);
 		settings->last_working_directory = cur_dir();
 		chdir(splitted_input[1]);
+		dict_add(settings->exported_env, "OLDPWD\0", settings->last_working_directory);
+		other_temp = cur_dir();
+		dict_add(settings->exported_env, "PWD\0", other_temp);
+		free(other_temp);
 		return (0);
 	}
 	printf("cd: no such file or directory: %s\n", splitted_input[1]);
@@ -333,6 +346,7 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		else 
 		{
 			t_pipex pipex;
+			settings->pipex = &pipex;
 			char **something = unite_env(settings->exported_env);
 			//pipex init
 			// char **nash_env = build();
@@ -382,11 +396,13 @@ int parse_input(char *input, t_settings *settings,char **envp)
 			ft_split_clear(splitted_input);
 			ft_split_clear(something);
 			free_resplitted(resplitted_input);
+			settings->pipex = NULL;
 			return (1);
 		}
 	}
 	else 
 	{
+		
 		t_pipex pipex;
 		//pipex init
 		// char **nash_env = build();
@@ -437,6 +453,7 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		ft_split_clear(splitted_input);
 		ft_split_clear(something);
 		free_resplitted(resplitted_input);
+		settings->pipex = NULL;
 		return (1);
 	}
 }
@@ -450,11 +467,29 @@ void	finish(t_settings *settings, char *input)
 
 void	my_readline(t_settings *settings);
 
+void	kill_children(t_settings *settings, int to_kill)
+{
+	static t_settings *local_settings = NULL;
+	int i;
+
+	if (!local_settings)
+		local_settings = settings;
+	if (to_kill && local_settings->pipex && local_settings->pipex->pid)
+	{
+		i = 0;
+		while (local_settings->pipex->pid[i])
+			{
+				kill(local_settings->pipex->pid[i], SIGINT);
+				i++;
+			}
+	}
+}
 
 void	interrupt_input(int sig)
 {
 	// printf("\nint interrupt 1\n");
 	rl_on_new_line();
+	kill_children(NULL, 1);
 	rl_replace_line("\0", 0);
 	printf("\n");
 	rl_redisplay();
@@ -523,6 +558,7 @@ void	shell(char *envp[])
 	t_settings *settings;
 
 	settings = create_setttings(envp);
+	kill_children(settings, 0);
 	// change_ctrl_c();
 	disable_ctrlc();
 	settings->last_working_directory = cur_dir();

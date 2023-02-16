@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/12 16:18:32 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/16 13:25:56 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <sys/types.h>
 # include <sys/uio.h>
 # include <dirent.h>
+# include <signal.h>
 
 typedef struct dict_s
 {
@@ -33,6 +34,14 @@ typedef struct dict_s
 	char	**values;
 	int		len;
 }	t_dict;
+
+typedef struct s_pipex
+{
+	pid_t	*pid;
+	int		number_of_pipes;
+	int 	**truby;
+	int		i;
+}	t_pipex;
 
 typedef struct	settings_s
 {
@@ -43,16 +52,10 @@ typedef struct	settings_s
 	char	*input;
 	char	*last_cmd;
 	struct termios *term_state;
+	t_pipex	*pipex;
 }	t_settings;
 
 
-typedef struct s_pipex
-{
-	pid_t	*pid;
-	int		number_of_pipes;
-	int 	**truby;
-	int		i;
-}	t_pipex;
 
 
 char		*ft_str_join_free_first(char *str1, char *str2);

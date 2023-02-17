@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/16 17:32:41 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/17 17:23:35 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	env(char **splitted_input, t_settings *settings)
 	i = 0;
 	if (splitted_input[1])
 	{
-		printf("sorry in current version env doesn't take any parameters\n");
+		printf("sorry in current version env doesn't take any  ameters\n");
 		return (127);
 	}
 	while (settings->exported_env->keys[i])
@@ -258,6 +258,41 @@ void	no_command(char **splitted_input, char *path, char **paths)
 	exit (127);
 }
 
+int	check_angulars(char **splitted_input)
+{
+	int	i;
+	
+	i = 0;
+	while (splitted_input[i])
+	{
+		if (splitted_input[i][0] == '>' || splitted_input[i][0] == '<')
+		{
+			if (!splitted_input[i + 1])
+			{
+				printf("syntax error near unexpected token 'newline'\n");
+				return (0);
+			}
+			if (splitted_input[i + 1][0] == '|')
+			{
+				printf("syntax error near unexpected token '|'\n");
+				return (0);
+			}
+			if (splitted_input[i + 1][0] == '<')
+			{
+				printf("syntax error near unexpected token '<'\n");
+				return (0);
+			}
+			if (splitted_input[i + 1][0] == '>')
+			{
+				printf("syntax error near unexpected token '>'\n");
+				return (0);
+			}
+		}
+		i++;
+	}
+	return (1);
+}
+
 int parse_input(char *input, t_settings *settings,char **envp)
 {
 	char **splitted_input;
@@ -265,6 +300,11 @@ int parse_input(char *input, t_settings *settings,char **envp)
 	if (!input)
 		return (0);
 	splitted_input = split(input, settings);
+	if (!check_angulars(splitted_input))
+	{
+		ft_split_clear(splitted_input);
+		return (1);
+	}
 	resplitted_input = resplit(splitted_input);
 	// print_splitted(splitted_input);
 	// char **something = unite_env(settings->exported_env);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_shell.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/16 17:49:36 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/17 17:27:45 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,7 +311,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 				} 
 			}
 			//check if outfile is in append mode
-			else if (strings_equal(cmd_and_args[i+1], ">>"))
+			else if (strings_equal(cmd_and_args[i], ">>"))
 			{
 				redirect_output = 1;
 				if(cmd_and_args[i+1])

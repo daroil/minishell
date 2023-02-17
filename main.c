@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/17 17:23:35 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/18 00:06:08 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,8 @@ char	*valid_path(char **paths, char *filename)
 	int		i;
 
 	i = -1;
+	if (!paths)
+		return(NULL);
 	if (!access(filename, X_OK))
 		return (filename);
 	while (paths[++i])
@@ -407,7 +409,7 @@ int parse_input(char *input, t_settings *settings,char **envp)
 			pipex.i = 0;
 			while (pipex.i <= pipex.number_of_pipes)
 			{
-				single_pipe(resplitted_input[pipex.i], pipex, something);
+				single_pipe(resplitted_input[pipex.i], pipex, something, settings);
 				if (string_in_array_of_strings("<<", resplitted_input[pipex.i]))
 					waitpid(pipex.pid[pipex.i], NULL, 0);
 				pipex.i++;
@@ -430,9 +432,9 @@ int parse_input(char *input, t_settings *settings,char **envp)
 				pipex.i++;
 			}
 			free(pipex.pid);
-			//cleaning input
-			disable_ctrlc();
 			// change_ctrl_c();
+			disable_ctrlc();
+			//cleaning input
 			ft_split_clear(splitted_input);
 			ft_split_clear(something);
 			free_resplitted(resplitted_input);
@@ -464,7 +466,7 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		pipex.i = 0;
 		while (pipex.i <= pipex.number_of_pipes)
 		{
-			single_pipe(resplitted_input[pipex.i], pipex, something);
+			single_pipe(resplitted_input[pipex.i], pipex, something, settings);
 			if (string_in_array_of_strings("<<", resplitted_input[pipex.i]))
 				waitpid(pipex.pid[pipex.i], NULL, 0);
 			pipex.i++;
@@ -487,9 +489,9 @@ int parse_input(char *input, t_settings *settings,char **envp)
 			pipex.i++;
 		}
 		free(pipex.pid);
-		//cleaning input
-		disable_ctrlc();
 		// change_ctrl_c();
+		disable_ctrlc();
+		//cleaning input
 		ft_split_clear(splitted_input);
 		ft_split_clear(something);
 		free_resplitted(resplitted_input);

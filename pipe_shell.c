@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_shell.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/17 17:27:45 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/18 00:07:48 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ int	array_len(char **array)
 }
 
 
-int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
+int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp, t_settings *settings)
 {
 	char	**cmd;
 	int		cmd_len;
@@ -253,7 +253,6 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 			//check if here_doc
 			else if (strings_equal(cmd_and_args[i], "<<"))
 			{
-
 				redirect_input = 1;
 				if(cmd_and_args[i+1])
 				{
@@ -357,6 +356,54 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp)
 			}
 			close_truby(truby, num, size);
 		}
+		//our commands
+		if (strings_equal(cmd[0], "exit"))
+		{
+			ft_split_clear(cmd);
+			exit(0);
+		}
+		if (!cmd[0])
+		{
+			ft_split_clear(cmd);
+			exit(1);
+		}
+		if (strings_equal(cmd[0], "echo\0"))
+		{
+			echo(cmd + 1);
+			ft_split_clear(cmd);
+			exit(1);
+		}
+		if (strings_equal(cmd[0], "pwd\0"))
+		{
+			pwd(cmd);
+			ft_split_clear(cmd);
+			exit(1);
+		}
+		if (strings_equal(cmd[0], "cd\0"))
+		{
+			cd(cmd, settings);
+			ft_split_clear(cmd);
+			exit (1);
+		}
+		if (strings_equal(cmd[0], "unset\0"))
+		{
+			unset(cmd, settings);
+			ft_split_clear(cmd);
+			exit(1);
+		}
+		if (strings_equal(cmd[0], "export\0"))
+		{
+			export(cmd, settings);
+			ft_split_clear(cmd);
+			exit(1);
+		}
+		if (ft_strchr(cmd[0], '='))
+		{
+			deal_with_equal_sign(cmd, settings);
+			ft_split_clear(cmd);
+			exit(1);
+		}
+		
 		//check if command exists and executing it
 		paths = get_paths(envp);
 		path = valid_path(paths, cmd[0]);

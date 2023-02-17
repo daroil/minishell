@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/16 13:25:56 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/17 23:47:35 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,15 @@ char		*ft_str_join_free_both(char *str1, char *str2);
 void	disable_ctrlc(void);
 void	enable_ctrlc(void);
 
+//basic shell functions
+int	deal_with_equal_sign(char **splitted_input, t_settings *settings);
+int	export(char **splitted_input, t_settings *settings);
+int	unset(char **splitted_input, t_settings *settings);
+int	env(char **splitted_input, t_settings *settings);
+int cd(char **splitted_input, t_settings *settings);
+int	pwd(char **splitted_input);
+
+
 // dict funcitons
 t_dict	*init_dict(void);
 void	dict_add(t_dict *dict, char *key, char *value);
@@ -131,7 +140,8 @@ char	*valid_path(char **paths, char *filename);
 // int		single_pipe(char **splitted_input, int fd_in, int fd_out, char **envp);
 // int		single_pipe_(char **cmd_and_args, int fd_in, int fd_out, char **envp, int **pip, pid_t	*pid, int num, int **pip2);
 // int	single_pipe_(char **cmd_and_args, int **truby, char **envp,pid_t	*pid, int num, int size);
-int		single_pipe(char **cmd_and_args,t_pipex pipex, char **envp);
+// int		single_pipe(char **cmd_and_args,t_pipex pipex, char **envp);
+int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp, t_settings *settings);
 char	*repeat_line_n_times(char *str, int n);
 
 // wild stuf

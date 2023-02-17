@@ -6,66 +6,17 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/18 00:07:48 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/18 00:23:36 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	dups(int fd1, int fd2)
-{
-	dup2(fd1, STDIN_FILENO);
-	dup2(fd2, STDOUT_FILENO);
-}
-
-int	is_arrow(char c)
-{
-	if (c == '<' || c == '>')
-		return(1);
-	return(0);
-}
-
-int	count_arrows(char *line)
-{
-	int	i;
-	int	count;
-	i = 0;
-	count = 0;
-	while (line[i])
-	{
-		if (is_arrow(line[i]))
-			count++;
-		if (is_arrow(line[i+1]))
-			i++;
-		i++;
-	}
-	return(count);
-}
-
-static int	count_words(char const *s, char *c)
-{
-	int		counter;
-	int		i;
-	int		prev;
-
-	prev = 0;
-	counter = 0;
-	i = 0;
-	while (s[i])
-	{
-		if (is_arrow(s[i]))
-		{
-			counter += prev;
-			prev = 0;
-		}
-		else
-			prev = 1;
-		i++;
-	}
-	if (i == 0)
-		return (0);
-	return (counter + (!ft_strchr(c, s[i - 1])));
-}
+// void	dups(int fd1, int fd2)
+// {
+// 	dup2(fd1, STDIN_FILENO);
+// 	dup2(fd2, STDOUT_FILENO);
+// }
 
 // int	has_arrows(const char *s)
 // {
@@ -79,40 +30,6 @@ static int	count_words(char const *s, char *c)
 // 	}
 // 	return (0);
 // }
-
-char	**split_by_arrows(char *command_args)
-{
-	char	**result;
-	int		i;
-	int		new_word_start;
-	int		counter;
-	int		word;
-	int		size;
-
-	size = count_arrows(command_args);
-	result = malloc(sizeof(char *) * (size + 1));
-	// result[count_arrows(command_args)] = NULL;
-	i = 0;
-	new_word_start = 0;
-	word = -1;
-	while (++word < size)
-	{
-		while (is_arrow(command_args[i]) && command_args[i])
-			i = i + 1;
-		new_word_start = i;
-		while (command_args[i] && !is_arrow(command_args[i]))
-			i += 1;
-		result[word] = malloc(sizeof(char) * (i - new_word_start + 1));
-		if (!result[word])
-			return (ft_split_clear(result));
-		counter = 0;
-		while (new_word_start < i)
-			result[word][counter++] = command_args[new_word_start++];
-		result[word][counter] = '\0';
-	}
-	result[word] = NULL;
-	return (result);	
-}
 
 void	read_from_to_shell(char *delimimter, int in_fd, int out_fd)
 {

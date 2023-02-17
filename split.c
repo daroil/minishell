@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 19:18:48 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/16 16:32:07 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/17 13:53:45 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	is_bash_special_char(char c)
 {
 	int			i;
-	static char	special_chars[] = "'\"$=| \0";
+	static char	special_chars[] = "'\"$=|<> \0";
 
 	i = 0;
 	while (special_chars[i])
@@ -160,7 +160,7 @@ t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 				res->last_index += mid_dollar_res->last_index + 1;
 				free_next_arg_return(mid_dollar_res);
 			}
-			else if (input[i] == '|')
+			else if (input[i] == '|' || input[i] == '>' || input[i] == '<')
 				return (res);
 		}
 		res -> last_index = i;
@@ -188,6 +188,37 @@ t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 	{
 		res->last_index = start + 1;
 		res->arg = str_copy("|\0", -1);
+	}
+	if (input[start] && input[start] == '>')
+	{
+		if (input[start + 1] && input[start + 1] == '>')
+		{
+			res->last_index = start + 2;
+			res->arg = str_copy(">>\0", -1);
+		}
+		else if (input[start + 1] && input[start + 1] == '|')
+		{
+			res->last_index = start + 2;
+			res->arg = str_copy(">\0", -1);
+		}
+		else
+		{
+			res->last_index = start + 1;
+			res->arg = str_copy(">\0", -1);
+		}
+	}
+	if (input[start] && input[start] == '<')
+	{
+		if (input[start + 1] && input[start + 1] == '<')
+		{
+			res->last_index = start + 2;
+			res->arg = str_copy("<<\0", -1);
+		}
+		else
+		{
+			res->last_index = start + 1;
+			res->arg = str_copy("<\0", -1);
+		}
 	}
 	return (res);
 	

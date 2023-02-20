@@ -21,3 +21,8 @@ dhendzel@1-D-2 minishell % ./shell
 /Users/dhendzel/Documents/minishell> env
 /Users/dhendzel/Documents/minishell> unset a
 /Users/dhendzel/Documents/minishell> env
+
+
+cd 
+ls
+cd Applications

@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/17 23:47:35 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/20 14:24:05 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,8 @@ pid_t	*make_pids(int n);
 void	waitress(pid_t *pids, int len);
 char	**transform_args_to_cmds(char **argv);
 void	dups(int fd1, int fd2);
-int		pipex_init(t_pipex *pipex, char **argv, int argc, char **env);
-void	clean_pipex(t_pipex *pipex);
+// int		pipex_init(t_pipex *pipex, char **argv, int argc, char **env);
+// void	clean_pipex(t_pipex *pipex);
 void	error(t_pipex *pipex, char **args, char *path);
 void	piping(t_pipex *pipex, int i, char **env);
 char	**get_paths(char **env);

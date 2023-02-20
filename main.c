@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/20 13:52:20 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/20 14:32:43 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -347,6 +347,67 @@ int basic_commands(char **splitted_input, char ***resplitted_input, t_settings *
 	return (clear_splits(splitted_input, resplitted_input), 1);
 }
 
+void	pipex_init(t_settings *settings, char ***resplitted_input)
+{
+	change_ctrl_c();
+	settings->pipex->number_of_pipes = count_resplitted(resplitted_input) - 1;
+	settings->pipex->pid = malloc(sizeof(pid_t) * (settings->pipex->number_of_pipes + 1));
+	settings->pipex->truby = malloc(sizeof(int *) * (settings->pipex->number_of_pipes + 1));
+	settings->pipex->i = 0;
+	while (settings->pipex->i < settings->pipex->number_of_pipes)
+	{
+		settings->pipex->truby[settings->pipex->i] = malloc(sizeof(int) * 2);
+		pipe(settings->pipex->truby[settings->pipex->i]);
+		settings->pipex->i++;
+	}
+	settings->pipex->truby[settings->pipex->i] = NULL;
+}
+
+void	clean_and_wait_pipex(t_settings *settings)
+{
+	settings->pipex->i = 0;
+	while(settings->pipex->truby[settings->pipex->i])
+	{
+		close(settings->pipex->truby[settings->pipex->i][0]);
+		close(settings->pipex->truby[settings->pipex->i][1]);
+		free(settings->pipex->truby[settings->pipex->i]);
+		settings->pipex->i++;
+	}
+	free(settings->pipex->truby);
+	settings->pipex->i = 0;
+	while (settings->pipex->i <= settings->pipex->number_of_pipes)
+	{
+		waitpid(settings->pipex->pid[settings->pipex->number_of_pipes], NULL, 0);
+		settings->pipex->i++;
+	}
+	free(settings->pipex->pid);
+}
+
+int pipex(char **splitted_input, char ***resplitted_input, t_settings *settings)
+{
+	t_pipex pipex;
+	char **something;
+	
+	something = unite_env(settings->exported_env); 
+	settings->pipex = &pipex;
+	pipex_init(settings, resplitted_input);
+	pipex.i = 0;
+	while (pipex.i <= pipex.number_of_pipes)
+	{
+		single_pipe(resplitted_input[pipex.i], pipex, something, settings);
+		if (string_in_array_of_strings("<<", resplitted_input[pipex.i]))
+			waitpid(pipex.pid[pipex.i], NULL, 0);
+		pipex.i++;
+	}
+	clean_and_wait_pipex(settings);
+	disable_ctrlc();
+	ft_split_clear(splitted_input);
+	ft_split_clear(something);
+	free_resplitted(resplitted_input);
+	settings->pipex = NULL;
+	return (1);
+}
+
 int parse_input(char *input, t_settings *settings,char **envp)
 {
 	char **splitted_input;
@@ -365,118 +426,10 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		if((check_basic_commands(splitted_input, resplitted_input, settings)))
 			return(basic_commands(splitted_input, resplitted_input, settings));
 		else 
-		{
-			t_pipex pipex;
-			settings->pipex = &pipex;
-			char **something = unite_env(settings->exported_env);
-			//pipex init
-			// char **nash_env = build();
-			change_ctrl_c();
-			pipex.number_of_pipes = count_resplitted(resplitted_input) - 1;
-			pipex.pid = malloc(sizeof(pid_t) * (pipex.number_of_pipes + 1));
-			pipex.truby = malloc(sizeof(int *) * (pipex.number_of_pipes + 1));
-			pipex.i = 0;
-			while (pipex.i < pipex.number_of_pipes)
-			{
-				pipex.truby[pipex.i] = malloc(sizeof(int) * 2);
-				pipe(pipex.truby[pipex.i]);
-				pipex.i++;
-			}
-			pipex.truby[pipex.i] = NULL;
-
-			//executing commands
-			pipex.i = 0;
-			while (pipex.i <= pipex.number_of_pipes)
-			{
-				single_pipe(resplitted_input[pipex.i], pipex, something, settings);
-				if (string_in_array_of_strings("<<", resplitted_input[pipex.i]))
-					waitpid(pipex.pid[pipex.i], NULL, 0);
-				pipex.i++;
-			}
-			
-			//cleaning pipes and waiting for children
-			pipex.i = 0;
-			while(pipex.truby[pipex.i])
-			{
-				close(pipex.truby[pipex.i][0]);
-				close(pipex.truby[pipex.i][1]);
-				free(pipex.truby[pipex.i]);
-				pipex.i++;
-			}
-			free(pipex.truby);
-			pipex.i = 0;
-			while (pipex.i <= pipex.number_of_pipes)
-			{
-				waitpid(pipex.pid[pipex.number_of_pipes], NULL, 0);
-				pipex.i++;
-			}
-			free(pipex.pid);
-			// change_ctrl_c();
-			disable_ctrlc();
-			//cleaning input
-			ft_split_clear(splitted_input);
-			ft_split_clear(something);
-			free_resplitted(resplitted_input);
-			settings->pipex = NULL;
-			return (1);
-		}
+			return(pipex(splitted_input, resplitted_input, settings));
 	}
 	else 
-	{
-		
-		t_pipex pipex;
-		//pipex init
-		// char **nash_env = build();
-		char **something = unite_env(settings->exported_env);
-		change_ctrl_c();
-		pipex.number_of_pipes = count_resplitted(resplitted_input) - 1;
-		pipex.pid = malloc(sizeof(pid_t) * (pipex.number_of_pipes + 1));
-		pipex.truby = malloc(sizeof(int *) * (pipex.number_of_pipes + 1));
-		pipex.i = 0;
-		while (pipex.i < pipex.number_of_pipes)
-		{
-			pipex.truby[pipex.i] = malloc(sizeof(int) * 2);
-			pipe(pipex.truby[pipex.i]);
-			pipex.i++;
-		}
-		pipex.truby[pipex.i] = NULL;
-
-		//executing commands
-		pipex.i = 0;
-		while (pipex.i <= pipex.number_of_pipes)
-		{
-			single_pipe(resplitted_input[pipex.i], pipex, something, settings);
-			if (string_in_array_of_strings("<<", resplitted_input[pipex.i]))
-				waitpid(pipex.pid[pipex.i], NULL, 0);
-			pipex.i++;
-		}
-		
-		//cleaning pipes and waiting for children
-		pipex.i = 0;
-		while(pipex.truby[pipex.i])
-		{
-			close(pipex.truby[pipex.i][0]);
-			close(pipex.truby[pipex.i][1]);
-			free(pipex.truby[pipex.i]);
-			pipex.i++;
-		}
-		free(pipex.truby);
-		pipex.i = 0;
-		while (pipex.i <= pipex.number_of_pipes)
-		{
-			waitpid(pipex.pid[pipex.number_of_pipes], NULL, 0);
-			pipex.i++;
-		}
-		free(pipex.pid);
-		// change_ctrl_c();
-		disable_ctrlc();
-		//cleaning input
-		ft_split_clear(splitted_input);
-		ft_split_clear(something);
-		free_resplitted(resplitted_input);
-		settings->pipex = NULL;
-		return (1);
-	}
+		return(pipex(splitted_input, resplitted_input, settings));
 }
 
 
@@ -589,7 +542,6 @@ void	shell(char *envp[])
 
 	settings = create_setttings(envp);
 	kill_children(settings, 0, 0);
-	// change_ctrl_c();
 	disable_ctrlc();
 	settings->last_working_directory = cur_dir();
 	signal(SIGINT, interrupt_input);

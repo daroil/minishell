@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/20 14:32:43 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/20 14:37:28 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,20 +39,26 @@ int	pwd(char **splitted_input)
 	return (0);
 }
 
+int	cd_home(char **splitted_input, t_settings *settings)
+{
+	char *temp;
+	char *other_temp;
+	
+	settings->last_working_directory = cur_dir();
+	chdir("/");
+	dict_add(settings->exported_env, "OLDPWD\0",settings->last_working_directory);
+	other_temp = cur_dir();
+	dict_add(settings->exported_env, "PWD\0", other_temp);
+	free(other_temp);
+	return (0);
+}
+
 int cd(char **splitted_input, t_settings *settings)
 {
 	char *temp;
 	char *other_temp;
 	if (!splitted_input[1])
-	{
-		settings->last_working_directory = cur_dir();
-		chdir("/");
-		dict_add(settings->exported_env, "OLDPWD\0",settings->last_working_directory);
-		other_temp = cur_dir();
-		dict_add(settings->exported_env, "PWD\0", other_temp);
-		free(other_temp);
-		return (0);
-	}
+		return(cd_home(splitted_input, settings));
 	if (strings_equal(splitted_input[1], "-\0"))
 	{
 		temp = settings->last_working_directory;

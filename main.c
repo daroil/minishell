@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/20 13:28:54 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/20 16:01:52 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	env(char **splitted_input, t_settings *settings)
 		printf("sorry in current version env doesn't take any  ameters\n");
 		return (127);
 	}
-	while (settings->exported_env->keys[i])
+	while (i < settings->exported_env->len)
 	{
 		if (settings->exported_env->values[i])
 			printf("%s=%s\n", settings->exported_env->keys[i], settings->exported_env->values[i]);
@@ -150,9 +150,7 @@ int	export(char **splitted_input, t_settings *settings)
 		else if (dict_get(settings->env, temp[0], NULL))
 		{
 			dict_add(settings->exported_env, temp[0], dict_get(settings->env, temp[0], NULL));
-		}
-		else
-			dict_add(settings->exported_env, temp[0], NULL);
+		}	
 		ft_split_clear(temp);
 		i++;
 	}

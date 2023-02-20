@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/20 19:11:42 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/20 19:18:22 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,13 +189,28 @@ int infile_heredoc(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
 	} 
 }
 
+void	duping(int size, int num, t_pipex *pipex)
+{
+	if (num == 0 && !pipex->redirect_output)
+		dup2(pipex->truby[0][1], STDOUT_FILENO);
+	else if (num == size && !pipex->redirect_input)
+		dup2(pipex->truby[num - 1][0], STDIN_FILENO);
+	else
+	{
+		if (!pipex->redirect_input)
+			dup2(pipex->truby[num - 1][0], STDIN_FILENO);
+		if (num != size && !pipex->redirect_output)
+			dup2(pipex->truby[num][1], STDOUT_FILENO);
+	}
+	close_truby(pipex->truby, num, size);
+}
+
 int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp, t_settings *settings)
 {
 	char	**cmd;
 	int		cmd_len;
 	char	**paths;
 	char	*path;
-	int 	fd2;
 
 	pid_t *pid = pipex.pid; 
 	int num = pipex.i;
@@ -227,22 +242,8 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp, t_settings *set
 			}
 			i++;
 		}
-		// doing pipes if needed
 		if (size)
-		{
-			if (num == 0 && !pipex.redirect_output)
-				dup2(truby[0][1], STDOUT_FILENO);
-			else if (num == size && !pipex.redirect_input)
-				dup2(truby[num - 1][0], STDIN_FILENO);
-			else
-			{
-				if (!pipex.redirect_input)
-					dup2(truby[num - 1][0], STDIN_FILENO);
-				if (num != size && !pipex.redirect_output)
-					dup2(truby[num][1], STDOUT_FILENO);
-			}
-			close_truby(truby, num, size);
-		}
+			duping(size, num, &pipex);
 		//our commands
 		if (strings_equal(cmd[0], "exit"))
 		{

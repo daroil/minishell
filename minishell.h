@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/20 14:24:05 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/20 18:29:18 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ typedef struct s_pipex
 	int		number_of_pipes;
 	int 	**truby;
 	int		i;
+	int		redirect_input;
+	int		redirect_output;
 }	t_pipex;
 
 typedef struct	settings_s

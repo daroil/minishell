@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/20 17:18:10 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/20 18:47:06 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -372,6 +372,8 @@ void	pipex_init(t_settings *settings, char ***resplitted_input)
 	settings->pipex->pid = malloc(sizeof(pid_t) * (pipe_num + 1));
 	settings->pipex->truby = malloc(sizeof(int *) * (pipe_num + 1));
 	settings->pipex->i = 0;
+	settings->pipex->redirect_input = 0;
+	settings->pipex->redirect_output = 0;
 	while (settings->pipex->i < settings->pipex->number_of_pipes)
 	{
 		settings->pipex->truby[settings->pipex->i] = malloc(sizeof(int) * 2);

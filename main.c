@@ -6,16 +6,16 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/20 14:37:28 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/20 17:10:55 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
 char *cur_dir(void)
 {
-	char *res;
+	char	*res;
+
 	res = malloc(sizeof(char) * 1000);
 	if (!getcwd(res, 1000))
 	{
@@ -28,12 +28,13 @@ char *cur_dir(void)
 int	pwd(char **splitted_input)
 {
 	char	*to_print;
+
 	if (splitted_input[1])
 		printf("pwd: too many arguments\n");
 	else
 	{
 		to_print = cur_dir();
-		printf("%s\n",to_print);
+		printf("%s\n", to_print);
 		free(to_print);
 	}
 	return (0);
@@ -41,42 +42,54 @@ int	pwd(char **splitted_input)
 
 int	cd_home(char **splitted_input, t_settings *settings)
 {
-	char *temp;
-	char *other_temp;
-	
+	char	*temp;
+	char	*other_temp;
+
+	temp = settings->last_working_directory;
 	settings->last_working_directory = cur_dir();
 	chdir("/");
-	dict_add(settings->exported_env, "OLDPWD\0",settings->last_working_directory);
+	dict_add(settings->exported_env, "OLDPWD\0",
+		settings->last_working_directory);
 	other_temp = cur_dir();
 	dict_add(settings->exported_env, "PWD\0", other_temp);
 	free(other_temp);
+	free(temp);
+	return (0);
+}
+
+int	cd_minus(char **splitted_input, t_settings *settings)
+{
+	char	*temp;
+	char	*other_temp;
+
+	temp = settings->last_working_directory;
+	settings->last_working_directory = cur_dir();
+	chdir(temp);
+	dict_add(settings->exported_env, "OLDPWD\0",
+		settings->last_working_directory);
+	other_temp = cur_dir();
+	dict_add(settings->exported_env, "PWD\0", other_temp);
+	free(other_temp);
+	free(temp);
 	return (0);
 }
 
 int cd(char **splitted_input, t_settings *settings)
 {
-	char *temp;
-	char *other_temp;
+	char	*temp;
+	char	*other_temp;
+
 	if (!splitted_input[1])
-		return(cd_home(splitted_input, settings));
+		return (cd_home(splitted_input, settings));
 	if (strings_equal(splitted_input[1], "-\0"))
-	{
-		temp = settings->last_working_directory;
-		settings->last_working_directory = cur_dir();
-		chdir(temp);
-		dict_add(settings->exported_env, "OLDPWD\0", settings->last_working_directory);
-		other_temp = cur_dir();
-		dict_add(settings->exported_env, "PWD\0", other_temp);
-		free(other_temp);
-		free(temp);
-		return (0);
-	}
+		return (cd_minus(splitted_input, settings));
 	if (!access(splitted_input[1], X_OK))
 	{
 		free(settings->last_working_directory);
 		settings->last_working_directory = cur_dir();
 		chdir(splitted_input[1]);
-		dict_add(settings->exported_env, "OLDPWD\0", settings->last_working_directory);
+		dict_add(settings->exported_env, "OLDPWD\0",
+			settings->last_working_directory);
 		other_temp = cur_dir();
 		dict_add(settings->exported_env, "PWD\0", other_temp);
 		free(other_temp);
@@ -99,7 +112,8 @@ int	env(char **splitted_input, t_settings *settings)
 	while (settings->exported_env->keys[i])
 	{
 		if (settings->exported_env->values[i])
-			printf("%s=%s\n", settings->exported_env->keys[i], settings->exported_env->values[i]);
+			printf("%s=%s\n", settings->exported_env->keys[i],
+				settings->exported_env->values[i]);
 		i++;
 	}
 	return (0);
@@ -122,7 +136,7 @@ int	unset(char **splitted_input, t_settings *settings)
 char **split_for_equal_sign(char *str)
 {
 	char	**res;
-	int	i;
+	int		i;
 
 	res = malloc(sizeof(char *) * 3);
 	res[2] = NULL;
@@ -144,7 +158,7 @@ int	export(char **splitted_input, t_settings *settings)
 	char	**temp;
 
 	i = 1;
-	while(splitted_input[i])
+	while (splitted_input[i])
 	{
 		temp = split_for_equal_sign(splitted_input[i]);
 		// print_splitted(temp);
@@ -155,7 +169,8 @@ int	export(char **splitted_input, t_settings *settings)
 		}
 		else if (dict_get(settings->env, temp[0], NULL))
 		{
-			dict_add(settings->exported_env, temp[0], dict_get(settings->env, temp[0], NULL));
+			dict_add(settings->exported_env, temp[0],
+				dict_get(settings->env, temp[0], NULL));
 		}
 		else
 			dict_add(settings->exported_env, temp[0], NULL);
@@ -168,8 +183,8 @@ int	export(char **splitted_input, t_settings *settings)
 
 int	deal_with_equal_sign(char **splitted_input, t_settings *settings)
 {
-	int	i;
-	char **temp;
+	int		i;
+	char	**temp;
 
 	while (splitted_input[i])
 	{
@@ -195,7 +210,7 @@ char	*valid_path(char **paths, char *filename)
 
 	i = -1;
 	if (!paths)
-		return(NULL);
+		return (NULL);
 	if (!access(filename, X_OK))
 		return (filename);
 	while (paths[++i])
@@ -227,8 +242,9 @@ char	**get_paths(char **env)
 
 int	check_path(char **envp, char *splitted_input)
 {
-	char **paths;
-	char *path;
+	char	**paths;
+	char	*path;
+
 	paths = get_paths(envp);
 	path = valid_path(paths, splitted_input);
 	ft_split_clear(paths);
@@ -249,7 +265,7 @@ int	string_in_array_of_strings(char *string, char **array)
 	while (array[i])
 	{
 		if (strings_equal(array[i], string))
-			return(1);
+			return (1);
 		i++;
 	}
 	return (0);
@@ -269,45 +285,38 @@ void	no_command(char **splitted_input, char *path, char **paths)
 int	check_angulars(char **splitted_input)
 {
 	int	i;
-	
+
 	i = 0;
 	while (splitted_input[i])
 	{
 		if (splitted_input[i][0] == '>' || splitted_input[i][0] == '<')
 		{
 			if (!splitted_input[i + 1])
-			{
-				printf("syntax error near unexpected token 'newline'\n");
-				return (0);
-			}
+				return (printf("syntax error near unexpected token 'newline'\n")
+					, 0);
 			if (splitted_input[i + 1][0] == '|')
-			{
-				printf("syntax error near unexpected token '|'\n");
-				return (0);
-			}
+				return (printf("syntax error near unexpected token '|'\n")
+					, 0);
 			if (splitted_input[i + 1][0] == '<')
-			{
-				printf("syntax error near unexpected token '<'\n");
-				return (0);
-			}
+				return (printf("syntax error near unexpected token '<'\n")
+					, 0);
 			if (splitted_input[i + 1][0] == '>')
-			{
-				printf("syntax error near unexpected token '>'\n");
-				return (0);
-			}
+				return (printf("syntax error near unexpected token '>'\n")
+					, 0);
 		}
 		i++;
 	}
 	return (1);
 }
 
-void clear_splits(char **splitted_input, char ***resplitted_input)
+void	clear_splits(char **splitted_input, char ***resplitted_input)
 {
 	ft_split_clear(splitted_input);
 	free_resplitted(resplitted_input);
 }
 
-int check_basic_commands(char **splitted_input, char ***resplitted_input, t_settings *settings)
+int	check_basic_commands(char **splitted_input,
+	char ***resplitted_input, t_settings *settings)
 {
 	if (strings_equal(splitted_input[0], "exit"))
 		return (1);
@@ -327,10 +336,11 @@ int check_basic_commands(char **splitted_input, char ***resplitted_input, t_sett
 		return (1);
 	if (ft_strchr(splitted_input[0], '='))
 		return (1);
-	return(0);
+	return (0);
 }
 
-int basic_commands(char **splitted_input, char ***resplitted_input, t_settings *settings)
+int	basic_commands(char **splitted_input,
+	char ***resplitted_input, t_settings *settings)
 {
 	if (strings_equal(splitted_input[0], "exit"))
 		return (clear_splits(splitted_input, resplitted_input), 0);
@@ -349,16 +359,20 @@ int basic_commands(char **splitted_input, char ***resplitted_input, t_settings *
 	else if (strings_equal(splitted_input[0], "export\0"))
 		settings->last_exit_status = export(splitted_input, settings);
 	else if (ft_strchr(splitted_input[0], '='))
-		settings->last_exit_status = deal_with_equal_sign(splitted_input, settings);
+		settings->last_exit_status = deal_with_equal_sign(splitted_input,
+			settings);
 	return (clear_splits(splitted_input, resplitted_input), 1);
 }
 
 void	pipex_init(t_settings *settings, char ***resplitted_input)
 {
+	int	pipe_num;
+
+	pipe_num = settings->pipex->number_of_pipes;
 	change_ctrl_c();
 	settings->pipex->number_of_pipes = count_resplitted(resplitted_input) - 1;
-	settings->pipex->pid = malloc(sizeof(pid_t) * (settings->pipex->number_of_pipes + 1));
-	settings->pipex->truby = malloc(sizeof(int *) * (settings->pipex->number_of_pipes + 1));
+	settings->pipex->pid = malloc(sizeof(pid_t) * (pipe_num + 1));
+	settings->pipex->truby = malloc(sizeof(int *) * (pipe_num + 1));
 	settings->pipex->i = 0;
 	while (settings->pipex->i < settings->pipex->number_of_pipes)
 	{
@@ -372,7 +386,7 @@ void	pipex_init(t_settings *settings, char ***resplitted_input)
 void	clean_and_wait_pipex(t_settings *settings)
 {
 	settings->pipex->i = 0;
-	while(settings->pipex->truby[settings->pipex->i])
+	while (settings->pipex->truby[settings->pipex->i])
 	{
 		close(settings->pipex->truby[settings->pipex->i][0]);
 		close(settings->pipex->truby[settings->pipex->i][1]);
@@ -383,18 +397,19 @@ void	clean_and_wait_pipex(t_settings *settings)
 	settings->pipex->i = 0;
 	while (settings->pipex->i <= settings->pipex->number_of_pipes)
 	{
-		waitpid(settings->pipex->pid[settings->pipex->number_of_pipes], NULL, 0);
+		waitpid(settings->pipex->pid[settings->pipex->number_of_pipes],
+			NULL, 0);
 		settings->pipex->i++;
 	}
 	free(settings->pipex->pid);
 }
 
-int pipex(char **splitted_input, char ***resplitted_input, t_settings *settings)
+int	pipex(char **splitted_input, char ***resplitted_input, t_settings *settings)
 {
-	t_pipex pipex;
-	char **something;
-	
-	something = unite_env(settings->exported_env); 
+	t_pipex	pipex;
+	char	**something;
+
+	something = unite_env(settings->exported_env);
 	settings->pipex = &pipex;
 	pipex_init(settings, resplitted_input);
 	pipex.i = 0;
@@ -414,10 +429,11 @@ int pipex(char **splitted_input, char ***resplitted_input, t_settings *settings)
 	return (1);
 }
 
-int parse_input(char *input, t_settings *settings,char **envp)
+int	parse_input(char *input, t_settings *settings, char **envp)
 {
-	char **splitted_input;
-	char ***resplitted_input;
+	char	**splitted_input;
+	char	***resplitted_input;
+
 	if (!input)
 		return (0);
 	splitted_input = split(input, settings);
@@ -429,15 +445,14 @@ int parse_input(char *input, t_settings *settings,char **envp)
 	resplitted_input = resplit(splitted_input);
 	if (count_resplitted(resplitted_input) == 1)
 	{
-		if((check_basic_commands(splitted_input, resplitted_input, settings)))
-			return(basic_commands(splitted_input, resplitted_input, settings));
-		else 
-			return(pipex(splitted_input, resplitted_input, settings));
+		if ((check_basic_commands(splitted_input, resplitted_input, settings)))
+			return (basic_commands(splitted_input, resplitted_input, settings));
+		else
+			return (pipex(splitted_input, resplitted_input, settings));
 	}
-	else 
-		return(pipex(splitted_input, resplitted_input, settings));
+	else
+		return (pipex(splitted_input, resplitted_input, settings));
 }
-
 
 void	finish(t_settings *settings, char *input)
 {
@@ -449,8 +464,8 @@ void	my_readline(t_settings *settings);
 
 void	kill_children(t_settings *settings, int to_kill, int sig)
 {
-	static t_settings *local_settings = NULL;
-	int i;
+	static t_settings	*local_settings = NULL;
+	int					i;
 
 	if (!local_settings)
 		local_settings = settings;
@@ -460,16 +475,15 @@ void	kill_children(t_settings *settings, int to_kill, int sig)
 			printf("Quit: 3\n");
 		i = 0;
 		while (local_settings->pipex->pid[i])
-			{
-				kill(local_settings->pipex->pid[i], sig);
-				i++;
-			}
+		{
+			kill(local_settings->pipex->pid[i], sig);
+			i++;
+		}
 	}
 }
 
 void	interrupt_input(int sig)
 {
-	// printf("\nint interrupt 1\n");
 	kill_children(NULL, 1, sig);
 	if (sig == SIGINT)
 	{
@@ -483,32 +497,25 @@ void	interrupt_input(int sig)
 		rl_redisplay();
 		printf("\b");
 	}
-	// printf("int interrupt 2\n");
-	// my_readline(NULL);
 }
 
 void	my_readline(t_settings *settings)
 {
-	char *prompt;
-	static t_settings *local_settings = NULL;
-	
+	char				*prompt;
+	static t_settings	*local_settings = NULL;
+
 	if (!local_settings)
 		local_settings = settings;
-	prompt = ft_str_join_free_both(str_copy("\r\0", -1), ft_str_join_free_first(cur_dir(), "> \0"));
-	// prompt = ft_str_join_free_first(cur_dir(), "> \0");
+	prompt = ft_str_join_free_both(str_copy("\r\0", -1),
+			ft_str_join_free_first(cur_dir(), "> \0"));
 	local_settings->input = readline(prompt);
 	free(prompt);
 }
 
-struct termios saved;
-
-void restore(void) {
-    tcsetattr(STDIN_FILENO, TCSANOW, &saved);
-}
-
 void	disable_ctrlc(void)
 {
-	struct	termios term;
+	struct termios	term;
+
 	tcgetattr(STDIN_FILENO, &term);
 	if (term.c_lflag & ECHOCTL)
 		term.c_lflag ^= ECHOCTL;
@@ -517,42 +524,36 @@ void	disable_ctrlc(void)
 
 void	change_ctrl_c(void)
 {
-	struct	termios term;
+	struct termios	term;
+
 	tcgetattr(STDIN_FILENO, &term);
 	term.c_lflag ^= ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &term);
 }
-void	enable_ctrlc(void)
+
+void	shell_init(char *envp[], t_settings *settings)
 {
-	printf("1\n");
-	static struct termios* term_state = NULL;
-	printf("2\n");
-	if (!term_state)
-		term_state = malloc(sizeof(struct termios *));
-	printf("3\n");
-	tcgetattr(STDIN_FILENO,term_state);
-	printf("4\n");
-	term_state->c_lflag = ECHOCTL | ECHO | ECHOE | ECHOKE | ICANON | ISIG | IEXTEN | PENDIN;
-	printf("5\n");
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, term_state);
-	printf("6\n");
-	// free(term_state);
-	printf("7\n");
-}
-
-
-void	shell(char *envp[])
-{
-	char *res;
-	t_settings *settings;
-
-	settings = create_setttings(envp);
 	kill_children(settings, 0, 0);
 	disable_ctrlc();
 	settings->last_working_directory = cur_dir();
 	signal(SIGINT, interrupt_input);
 	signal(SIGQUIT, interrupt_input);
 	my_readline(settings);
+}
+
+void	free_last_cmd(t_settings *settings)
+{
+	free(settings->last_cmd);
+	settings->last_cmd = NULL;
+}
+
+void	shell(char *envp[])
+{
+	char		*res;
+	t_settings	*settings;
+
+	settings = create_setttings(envp);
+	shell_init(envp, settings);
 	if (!parse_input(settings->input, settings, envp))
 		return (finish(settings, settings->input));
 	while (settings->input)
@@ -562,10 +563,7 @@ void	shell(char *envp[])
 		if (settings->input)
 		{
 			if (settings->last_cmd)
-			{
-				free(settings->last_cmd);
-				settings->last_cmd = NULL;
-			}
+				free_last_cmd(settings);
 			settings->last_cmd = str_copy(settings->input, -1);
 		}
 		free(settings->input);
@@ -576,12 +574,10 @@ void	shell(char *envp[])
 	finish(settings, settings->input);
 }
 
-
-
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	if (argc && argv)
-	shell(envp);
+		shell(envp);
 	system("leaks shell");
-	// return(0);
+	return (0);
 }

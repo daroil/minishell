@@ -6,13 +6,13 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/20 17:10:55 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/20 17:18:10 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char *cur_dir(void)
+char	*cur_dir(void)
 {
 	char	*res;
 
@@ -74,7 +74,7 @@ int	cd_minus(char **splitted_input, t_settings *settings)
 	return (0);
 }
 
-int cd(char **splitted_input, t_settings *settings)
+int	cd(char **splitted_input, t_settings *settings)
 {
 	char	*temp;
 	char	*other_temp;
@@ -133,7 +133,7 @@ int	unset(char **splitted_input, t_settings *settings)
 	return (0);
 }
 
-char **split_for_equal_sign(char *str)
+char	**split_for_equal_sign(char *str)
 {
 	char	**res;
 	int		i;
@@ -161,7 +161,6 @@ int	export(char **splitted_input, t_settings *settings)
 	while (splitted_input[i])
 	{
 		temp = split_for_equal_sign(splitted_input[i]);
-		// print_splitted(temp);
 		if (temp[1])
 		{
 			dict_add(settings->env, temp[0], temp[1]);
@@ -179,7 +178,6 @@ int	export(char **splitted_input, t_settings *settings)
 	}
 	return (0);
 }
-
 
 int	deal_with_equal_sign(char **splitted_input, t_settings *settings)
 {
@@ -251,7 +249,7 @@ int	check_path(char **envp, char *splitted_input)
 	if (!path)
 	{
 		free(path);
-		return(0);		
+		return (0);
 	}
 	free(path);
 	return (1);
@@ -360,7 +358,7 @@ int	basic_commands(char **splitted_input,
 		settings->last_exit_status = export(splitted_input, settings);
 	else if (ft_strchr(splitted_input[0], '='))
 		settings->last_exit_status = deal_with_equal_sign(splitted_input,
-			settings);
+				settings);
 	return (clear_splits(splitted_input, resplitted_input), 1);
 }
 
@@ -368,9 +366,9 @@ void	pipex_init(t_settings *settings, char ***resplitted_input)
 {
 	int	pipe_num;
 
-	pipe_num = settings->pipex->number_of_pipes;
 	change_ctrl_c();
 	settings->pipex->number_of_pipes = count_resplitted(resplitted_input) - 1;
+	pipe_num = settings->pipex->number_of_pipes;
 	settings->pipex->pid = malloc(sizeof(pid_t) * (pipe_num + 1));
 	settings->pipex->truby = malloc(sizeof(int *) * (pipe_num + 1));
 	settings->pipex->i = 0;

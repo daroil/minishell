@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/18 00:06:08 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/20 13:28:54 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,20 +308,6 @@ int parse_input(char *input, t_settings *settings,char **envp)
 		return (1);
 	}
 	resplitted_input = resplit(splitted_input);
-	// print_splitted(splitted_input);
-	// char **something = unite_env(settings->exported_env);
-	// 	printf("something[i] = %s\n", something[0]);
-	int i = 0;
-	// while (something[i])
-	// {
-	// 	printf("something[i] = %s\n", something[i]);
-	// 	i++;
-	// }
-	
-	// print_splitted(splitted_input);
-	// printf("%d\n", count_resplitted(resplitted_input));
-	// print_resplitted(resplitted_input);
-	// print_dict(settings->env);
 	if (count_resplitted(resplitted_input) == 1)
 	{
 		if (strings_equal(splitted_input[0], "exit"))

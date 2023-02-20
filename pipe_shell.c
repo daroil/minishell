@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/18 00:23:36 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/20 13:33:22 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,6 @@
 // {
 // 	dup2(fd1, STDIN_FILENO);
 // 	dup2(fd2, STDOUT_FILENO);
-// }
-
-// int	has_arrows(const char *s)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (s[i])
-// 	{
-// 		if ()
-// 		i++;
-// 	}
-// 	return (0);
 // }
 
 void	read_from_to_shell(char *delimimter, int in_fd, int out_fd)
@@ -47,27 +34,6 @@ void	read_from_to_shell(char *delimimter, int in_fd, int out_fd)
 		buf = get_next_line(in_fd);
 	}
 	free(buf);
-}
-
-char	*repeat_line_n_times(char *str, int n)
-{
-	char	*res;
-	char	*mid_res;
-
-	n = n - 1;
-	if (n <= 0)
-		return ("");
-	res = ft_strdup(str);
-	n--;
-	while (n)
-	{
-		mid_res = ft_strjoin(res, str);
-		free(res);
-		res = ft_strdup(mid_res);
-		free(mid_res);
-		n--;
-	}
-	return (res);
 }
 
 void	close_truby(int **truby, int cur, int len)
@@ -97,11 +63,8 @@ void	close_truby(int **truby, int cur, int len)
 
 void	interrupt_input_doc(int sig)
 {
-	// printf("\nint interrupt 1\n");
 	printf("\r");
 	exit(127);
-	// printf("int interrupt 2\n");
-	// my_readline(NULL);
 }
 
 int	array_len(char **array)
@@ -324,46 +287,9 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp, t_settings *set
 		//check if command exists and executing it
 		paths = get_paths(envp);
 		path = valid_path(paths, cmd[0]);
-		// if (strings_equal(cmd[0], "cd"))
-		// 	no_command(cmd, path, paths);
 		if (!path)
 			no_command(cmd, path, paths);
 		execve(path, cmd, envp);
 	}
 	return(1);
 }
-// single_pipe_("ls -at", 3, 4, envp)
-// single_pipe_("echo ", 3, 4, envp) use our echo (env, pwd, cd, )
-// single_pipe_("ls -at > logs", 3, 4, envp)
-// single_pipe_("ls -at >> logs", 3, 4, envp)
-// single_pipe_(" < file << file2 ls -at", 3, 4, envp) 
-// single_pipe_(" < file ls -at", 3, 4, envp)
-// single_pipe_(" < file ls -at > file >> file", 3, 4, envp) 
-// single_pipe_("ls -at>", 3, 4, envp) - fail
-// single_pipe_("ls -at>>", 3, 4, envp) - fail
-// single_pipe_(" < ls -at", 3, 4, envp) - fail(?)
-
-// int	single_pipe(char **splitted_input, int fd_in, int fd_out, char **envp)
-// {
-// 	pid_t	pid;
-// 	char	*path;
-// 	char	**paths;
-
-// 	pid = fork();
-// 	if (!pid)
-// 	{
-// 		dups(fd_in, fd_out);
-// 		if (fd_in == 3)
-// 			close(4);
-// 		if (fd_out == 4)
-// 			close(3);
-// 		paths = get_paths(envp);
-// 		path = valid_path(paths, splitted_input[0]);
-// 		if (!path)
-// 			no_command(splitted_input, path, paths);
-// 		execve(path, splitted_input, envp);
-// 	}	
-// 	waitpid(pid, NULL, 0);
-// 	ft_split_clear(splitted_input);
-// 	return (1);
-// }

@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 18:43:10 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/16 14:50:33 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/20 15:57:34 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,8 @@ char	**remove_string_from_str_arr(char **arr, int n)
 			res[i - 1] = arr[i];
 	}
 	res[i - 1] = NULL;
-	free(arr[n]);
+	if (arr[n])
+		free(arr[n]);
 	free(arr);
 	return (res);
 }

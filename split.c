@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 19:18:48 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/17 13:53:45 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/20 12:23:26 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ t_next_arg_return	*deal_with_dollar(char *input, t_settings *settings)
 		res->last_index++;
 		return (res);
 	}
-	while (input[i] && !is_bash_special_char(input[i]))
+	while (input[i] && !is_bash_special_char(input[i]) && input[i] != '\t')
 		i++;
 	mid_line = str_copy(input, i);
 	res->arg = str_copy(dict_get(settings->env, mid_line, NULL), -1);
@@ -130,7 +130,7 @@ t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 	{
 		i = start;
 		res->last_index = i;
-		while(input[i] && input[i] != ' ')
+		while(input[i] && input[i] != ' ' && input[i] != '\t')
 		{
 			while (input[i] && (!is_bash_special_char(input[i])) || input[i] == '=')
 				i++;

@@ -1,0 +1,23 @@
+dhendzel@1-D-2 minishell % ./shell 
+/Users/dhendzel/Documents/minishell> cd ..
+/Users/dhendzel/Documents> cd minishell/
+/Users/dhendzel/Documents/minishell> echo a
+/Users/dhendzel/Documents/minishell> echo $a
+/Users/dhendzel/Documents/minishell> a=b
+/Users/dhendzel/Documents/minishell> echo $a
+/Users/dhendzel/Documents/minishell> env
+/Users/dhendzel/Documents/minishell> pwd
+/Users/dhendzel/Documents/minishell
+/Users/dhendzel/Documents/minishell> unset a
+/Users/dhendzel/Documents/minishell> env
+/Users/dhendzel/Documents/minishell> echo $a
+/Users/dhendzel/Documents/minishell> a=b
+/Users/dhendzel/Documents/minishell> export
+/Users/dhendzel/Documents/minishell> echo $a
+/Users/dhendzel/Documents/minishell> env
+/Users/dhendzel/Documents/minishell> export $a
+/Users/dhendzel/Documents/minishell> env
+/Users/dhendzel/Documents/minishell> export a
+/Users/dhendzel/Documents/minishell> env
+/Users/dhendzel/Documents/minishell> unset a
+/Users/dhendzel/Documents/minishell> env

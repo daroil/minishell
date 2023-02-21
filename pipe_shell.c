@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/20 19:18:22 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/21 18:01:52 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,94 +205,76 @@ void	duping(int size, int num, t_pipex *pipex)
 	close_truby(pipex->truby, num, size);
 }
 
+int	basic_commands_pipe(char **cmd, t_settings *settings)
+{
+	if (strings_equal(cmd[0], "exit"))
+		return(1);
+	if (!cmd[0])
+		return(1);
+	if (strings_equal(cmd[0], "echo\0"))
+		return(echo(cmd + 1), 1);
+	if (strings_equal(cmd[0], "pwd\0"))
+		return(pwd(cmd), 1);
+	if (strings_equal(cmd[0], "cd\0"))
+		return(cd(cmd, settings), 1);
+	if (strings_equal(cmd[0], "unset\0"))
+		return(unset(cmd, settings), 1);
+	if (strings_equal(cmd[0], "export\0"))
+		return(export(cmd, settings), 1);
+	if (ft_strchr(cmd[0], '='))
+		return(deal_with_equal_sign(cmd, settings), 1);
+	return(0);
+}
+
+void	clean_exit(char **cmd)
+{
+	ft_split_clear(cmd);
+	exit(1);
+}
+
+char	**change_in_out_put_create_cmd(char **cmd_and_args, t_pipex *pipex, char **cmd)
+{
+	int	i;
+	int	cmd_len;
+
+	i = 0;
+	cmd_len = 0;
+	cmd = malloc(sizeof(char *));
+	cmd[0] = NULL;
+	while (cmd_and_args[i])
+	{
+		if (strings_equal(cmd_and_args[i], "<"))
+			i += infile_change(pipex, cmd, i, cmd_and_args);
+		else if (strings_equal(cmd_and_args[i], "<<"))
+			i += infile_heredoc(pipex, cmd, i, cmd_and_args);
+		else if (strings_equal(cmd_and_args[i], ">"))
+			i += outfile_change(pipex, cmd, i, cmd_and_args);
+		else if (strings_equal(cmd_and_args[i], ">>"))
+			i += outfile_change_append(pipex, cmd, i, cmd_and_args);
+		else
+		{
+				cmd = add_string_to_string_arr(cmd_and_args[i], cmd, cmd_len);
+				cmd_len++;
+		}
+		i++;
+	}
+	return (cmd);
+}
+
 int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp, t_settings *settings)
 {
 	char	**cmd;
-	int		cmd_len;
 	char	**paths;
 	char	*path;
 
-	pid_t *pid = pipex.pid; 
-	int num = pipex.i;
-	int size = pipex.number_of_pipes;
-	int **truby = pipex.truby;
-
-	int i = 0;
-	cmd_len = 0;
-	pid[num] = fork();
-	if (!pid[num])
+	pipex.pid[pipex.i] = fork();
+	if (!pipex.pid[pipex.i])
 	{
-		//allocating memory for command
-		cmd = malloc(sizeof(char *));
-		cmd[0] = NULL;
-		while (cmd_and_args[i])
-		{
-			if (strings_equal(cmd_and_args[i], "<"))
-				i += infile_change(&pipex, cmd, i, cmd_and_args);
-			else if (strings_equal(cmd_and_args[i], "<<"))
-				i += infile_heredoc(&pipex, cmd, i, cmd_and_args);
-			else if (strings_equal(cmd_and_args[i], ">"))
-				i += outfile_change(&pipex, cmd, i, cmd_and_args);
-			else if (strings_equal(cmd_and_args[i], ">>"))
-				i += outfile_change_append(&pipex, cmd, i, cmd_and_args);
-			else
-			{
-					cmd = add_string_to_string_arr(cmd_and_args[i], cmd, cmd_len);
-					cmd_len++;
-			}
-			i++;
-		}
-		if (size)
-			duping(size, num, &pipex);
-		//our commands
-		if (strings_equal(cmd[0], "exit"))
-		{
-			ft_split_clear(cmd);
-			exit(0);
-		}
-		if (!cmd[0])
-		{
-			ft_split_clear(cmd);
-			exit(1);
-		}
-		if (strings_equal(cmd[0], "echo\0"))
-		{
-			echo(cmd + 1);
-			ft_split_clear(cmd);
-			exit(1);
-		}
-		if (strings_equal(cmd[0], "pwd\0"))
-		{
-			pwd(cmd);
-			ft_split_clear(cmd);
-			exit(1);
-		}
-		if (strings_equal(cmd[0], "cd\0"))
-		{
-			cd(cmd, settings);
-			ft_split_clear(cmd);
-			exit (1);
-		}
-		if (strings_equal(cmd[0], "unset\0"))
-		{
-			unset(cmd, settings);
-			ft_split_clear(cmd);
-			exit(1);
-		}
-		if (strings_equal(cmd[0], "export\0"))
-		{
-			export(cmd, settings);
-			ft_split_clear(cmd);
-			exit(1);
-		}
-		if (ft_strchr(cmd[0], '='))
-		{
-			deal_with_equal_sign(cmd, settings);
-			ft_split_clear(cmd);
-			exit(1);
-		}
-		
-		//check if command exists and executing it
+		cmd = change_in_out_put_create_cmd(cmd_and_args, &pipex, cmd);
+		if (pipex.number_of_pipes)
+			duping(pipex.number_of_pipes, pipex.i, &pipex);
+		if (basic_commands_pipe(cmd, settings))
+			clean_exit(cmd);
 		paths = get_paths(envp);
 		path = valid_path(paths, cmd[0]);
 		if (!path)

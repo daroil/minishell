@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/21 18:01:52 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/21 19:36:34 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,30 +155,15 @@ int	outfile_change_append(t_pipex *pipex, char **cmd, int i, char **cmd_and_args
 int infile_heredoc(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
 {
 	int	heredoc_pipe[2];
-	char *buf;
 
 	pipex->redirect_input = 1;
 	if(cmd_and_args[i+1])
 	{
-		
-		pipe(heredoc_pipe);
 		signal(SIGINT, interrupt_input_doc);
+		pipe(heredoc_pipe);
 		read_from_to_shell(cmd_and_args[i+1], STDIN_FILENO, heredoc_pipe[1]);
 		close(heredoc_pipe[1]);
-		if (array_len(cmd_and_args) == 2)
-		{
-			buf = get_next_line(heredoc_pipe[0]);
-			while (buf)
-			{
-				ft_putstr_fd(buf, 1);
-				free(buf);
-				buf = get_next_line(heredoc_pipe[0]);
-			}
-			free(buf);
-			close(heredoc_pipe[0]);	
-		}
-		else
-			dup2(heredoc_pipe[0], STDIN_FILENO);
+		dup2(heredoc_pipe[0], STDIN_FILENO);
 		return (1);
 	}
 	else

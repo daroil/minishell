@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/21 19:36:34 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/21 19:45:59 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	interrupt_input_doc(int sig)
 
 int	array_len(char **array)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (array[i])
@@ -79,13 +79,13 @@ int	array_len(char **array)
 
 int	infile_change(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
 {
-	int 	fd;
-	
+	int	fd;
+
 	pipex->redirect_input = 1;
-	if(cmd_and_args[i+1])
+	if (cmd_and_args[i + 1])
 	{
-		fd = open(cmd_and_args[i+1], O_RDONLY);
-		if(fd == -1)
+		fd = open(cmd_and_args[i + 1], O_RDONLY);
+		if (fd == -1)
 		{
 			perror("file not found");
 			ft_split_clear(cmd);
@@ -99,18 +99,18 @@ int	infile_change(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
 		perror("file not found");
 		ft_split_clear(cmd);
 		exit(127);
-	} 
+	}
 }
 
 int	outfile_change(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
 {
-	int 	fd;
+	int	fd;
 
 	pipex->redirect_output = 1;
-	if(cmd_and_args[i+1])
+	if (cmd_and_args[i + 1])
 	{
-		fd = open(cmd_and_args[i+1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-		if(fd == -1)
+		fd = open(cmd_and_args[i + 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		if (fd == -1)
 		{
 			perror("No output file specified");
 			ft_split_clear(cmd);
@@ -124,18 +124,19 @@ int	outfile_change(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
 		perror("No output file specified");
 		ft_split_clear(cmd);
 		exit(127);
-	} 
+	}
 }
 
-int	outfile_change_append(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
+int	outfile_change_append(t_pipex *pipex, char **cmd,
+	int i, char **cmd_and_args)
 {
-	int 	fd;
+	int	fd;
 
 	pipex->redirect_output = 1;
-	if(cmd_and_args[i+1])
+	if (cmd_and_args[i + 1])
 	{
-		fd = open(cmd_and_args[i+1], O_RDWR | O_CREAT | O_APPEND, 0644);
-		if(fd == -1)
+		fd = open(cmd_and_args[i + 1], O_RDWR | O_CREAT | O_APPEND, 0644);
+		if (fd == -1)
 		{
 			perror("No output file specified");
 			ft_split_clear(cmd);
@@ -149,19 +150,19 @@ int	outfile_change_append(t_pipex *pipex, char **cmd, int i, char **cmd_and_args
 		perror("No output file specified");
 		ft_split_clear(cmd);
 		exit(127);
-	} 
+	}
 }
 
-int infile_heredoc(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
+int	infile_heredoc(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
 {
 	int	heredoc_pipe[2];
 
 	pipex->redirect_input = 1;
-	if(cmd_and_args[i+1])
+	if (cmd_and_args[i + 1])
 	{
 		signal(SIGINT, interrupt_input_doc);
 		pipe(heredoc_pipe);
-		read_from_to_shell(cmd_and_args[i+1], STDIN_FILENO, heredoc_pipe[1]);
+		read_from_to_shell(cmd_and_args[i + 1], STDIN_FILENO, heredoc_pipe[1]);
 		close(heredoc_pipe[1]);
 		dup2(heredoc_pipe[0], STDIN_FILENO);
 		return (1);
@@ -171,7 +172,7 @@ int infile_heredoc(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
 		perror("No delimiter specified");
 		ft_split_clear(cmd);
 		exit(127);
-	} 
+	}
 }
 
 void	duping(int size, int num, t_pipex *pipex)
@@ -193,22 +194,22 @@ void	duping(int size, int num, t_pipex *pipex)
 int	basic_commands_pipe(char **cmd, t_settings *settings)
 {
 	if (strings_equal(cmd[0], "exit"))
-		return(1);
+		return (1);
 	if (!cmd[0])
-		return(1);
+		return (1);
 	if (strings_equal(cmd[0], "echo\0"))
-		return(echo(cmd + 1), 1);
+		return (echo(cmd + 1), 1);
 	if (strings_equal(cmd[0], "pwd\0"))
-		return(pwd(cmd), 1);
+		return (pwd(cmd), 1);
 	if (strings_equal(cmd[0], "cd\0"))
-		return(cd(cmd, settings), 1);
+		return (cd(cmd, settings), 1);
 	if (strings_equal(cmd[0], "unset\0"))
-		return(unset(cmd, settings), 1);
+		return (unset(cmd, settings), 1);
 	if (strings_equal(cmd[0], "export\0"))
-		return(export(cmd, settings), 1);
+		return (export(cmd, settings), 1);
 	if (ft_strchr(cmd[0], '='))
-		return(deal_with_equal_sign(cmd, settings), 1);
-	return(0);
+		return (deal_with_equal_sign(cmd, settings), 1);
+	return (0);
 }
 
 void	clean_exit(char **cmd)
@@ -217,7 +218,8 @@ void	clean_exit(char **cmd)
 	exit(1);
 }
 
-char	**change_in_out_put_create_cmd(char **cmd_and_args, t_pipex *pipex, char **cmd)
+char	**change_in_out_put_create_cmd(char **cmd_and_args,
+	t_pipex *pipex, char **cmd)
 {
 	int	i;
 	int	cmd_len;
@@ -238,15 +240,16 @@ char	**change_in_out_put_create_cmd(char **cmd_and_args, t_pipex *pipex, char **
 			i += outfile_change_append(pipex, cmd, i, cmd_and_args);
 		else
 		{
-				cmd = add_string_to_string_arr(cmd_and_args[i], cmd, cmd_len);
-				cmd_len++;
+			cmd = add_string_to_string_arr(cmd_and_args[i], cmd, cmd_len);
+			cmd_len++;
 		}
 		i++;
 	}
 	return (cmd);
 }
 
-int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp, t_settings *settings)
+int	single_pipe(char **cmd_and_args, t_pipex pipex,
+	char **envp, t_settings *settings)
 {
 	char	**cmd;
 	char	**paths;
@@ -266,5 +269,5 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex, char **envp, t_settings *set
 			no_command(cmd, path, paths);
 		execve(path, cmd, envp);
 	}
-	return(1);
+	return (1);
 }

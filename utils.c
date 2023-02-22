@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 18:43:10 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/16 14:50:33 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/22 15:27:12 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,12 @@ char	*ft_str_join_free_first(char *str1, char *str2)
 	return (res);
 }
 
+void	free_two_strings(char *str1, char *str2)
+{
+	free(str1);
+	free(str2);
+}
+
 char	*ft_str_join_free_both(char *str1, char *str2)
 {
 	char	*res;
@@ -66,8 +72,7 @@ char	*ft_str_join_free_both(char *str1, char *str2)
 			res[i + len1] = str2[i];
 	}
 	res[len1 + len2] = '\0';
-	free(str1);
-	free(str2);
+	free_two_strings(str1, str2);
 	return (res);
 }
 

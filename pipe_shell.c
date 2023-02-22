@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/21 19:45:59 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/22 21:09:35 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,6 +267,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex,
 		path = valid_path(paths, cmd[0]);
 		if (!path)
 			no_command(cmd, path, paths);
+		// printf("path = %s\n", path);
 		execve(path, cmd, envp);
 	}
 	return (1);

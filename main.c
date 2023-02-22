@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/22 14:56:20 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/22 21:14:57 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -386,6 +386,8 @@ void	pipex_init(t_settings *settings, char ***resplitted_input)
 
 void	clean_and_wait_pipex(t_settings *settings)
 {
+	int exit_code;
+
 	settings->pipex->i = 0;
 	while (settings->pipex->truby[settings->pipex->i])
 	{
@@ -399,7 +401,13 @@ void	clean_and_wait_pipex(t_settings *settings)
 	while (settings->pipex->i <= settings->pipex->number_of_pipes)
 	{
 		waitpid(settings->pipex->pid[settings->pipex->number_of_pipes],
-			NULL, 0);
+			&exit_code, 0);
+		settings->last_exit_status = WEXITSTATUS(exit_code);
+		if (WIFSIGNALED(exit_code) && WTERMSIG(exit_code) == SIGSEGV)
+		{
+			printf("Segmentation is your Fault: 11\n");
+			settings->last_exit_status = 139;
+		}
 		settings->pipex->i++;
 	}
 	free(settings->pipex->pid);

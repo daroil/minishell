@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   settings.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 20:50:23 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/16 13:36:27 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/22 20:40:56 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ t_settings	*create_setttings(char **env)
 	res->last_cmd = NULL;
 	res->pipex = NULL;
 	parse_env(env, res);
+	dict_delete(res->env, "OLDPWD\0");
+	dict_delete(res->exported_env, "OLDPWD\0");
 	return (res);
 }
 

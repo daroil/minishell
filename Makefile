@@ -6,7 +6,7 @@
 #    By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 18:04:41 by sbritani          #+#    #+#              #
-#    Updated: 2023/02/23 00:07:41 by dhendzel         ###   ########.fr        #
+#    Updated: 2023/02/23 00:09:44 by dhendzel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,10 @@ INCRL		= -I /Users/$(USER)/.brew/opt/readline/include
 LIBRL		= -lreadline -L /Users/$(USER)/.brew/opt/readline/lib
 LIBRARIES	= -Llibft -lft $(LIBRL)
 INCLUDES	= -I ./header -Ilibft $(INCRL)
+
+# INCRL = -I$(DLDIR)/readline_out/include -Ilibft -Iincludes
+# LIBRL = -L$(DLDIR)/readline_out/lib -lreadline
+
 
 all: libft $(NAME)
 

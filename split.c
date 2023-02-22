@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 19:18:48 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/20 12:23:26 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/22 13:18:13 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ t_next_arg_return	*deal_with_double_quotes(char *input, t_settings *settings)
 	int					i;
 	t_next_arg_return	*res;
 	t_next_arg_return	*mid_dollar_res;
+
 	i = 0;
 	res = init_next_arg();
 	res->last_index = i;
@@ -66,10 +67,8 @@ t_next_arg_return	*deal_with_double_quotes(char *input, t_settings *settings)
 	{
 		while (input[i] && input[i] != '"' && input[i] != '$')
 			i++;
-		// printf("res->last_index = %d i is %d\n", res->last_index, i);
 		res->arg = ft_str_join_free_both(res->arg, str_copy(input + res->last_index, i - res->last_index));
 		res->last_index = i;
-		// printf("before dealing with dollar is %s  %d\n", res->arg, res->last_index);
 		if (input[i] == '$')
 		{
 			mid_dollar_res = deal_with_dollar(input + i + 1, settings);
@@ -78,8 +77,6 @@ t_next_arg_return	*deal_with_double_quotes(char *input, t_settings *settings)
 			res->last_index += mid_dollar_res->last_index + 1;
 			free_next_arg_return(mid_dollar_res);
 		}
-		// printf("after dealing with dollar is %s  %d\n", res->arg, res->last_index);
-		// printf("last index = %d\n", res->last_index);
 		if (input[i] == '"')
 			return (res);
 	}
@@ -113,11 +110,51 @@ t_next_arg_return	*deal_with_single_quotes(char *input, t_settings *settings)
 	return (res);
 }
 
+int	dollar_or_quote(char *input, int i)
+{
+	if (input[i] == '$')
+		return (1);
+	else if (input[i] == '"')
+		return (1);
+	else if (input[i] == '\'')
+		return (1);
+	else
+		return (0);
+}
+
+int	for_spec_char_return_index(char *input, t_next_arg_return *res, t_settings *settings, int i)
+{
+	t_next_arg_return *mid_dollar_res;
+
+	if (input[i] == '$')
+	{
+		mid_dollar_res = deal_with_dollar(input + i + 1, settings);
+		res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
+		i += mid_dollar_res->last_index + 1;
+		res->last_index += mid_dollar_res->last_index + 1;
+	}
+	else if (input[i] == '"')
+	{
+		mid_dollar_res = deal_with_double_quotes(input + i + 1, settings);
+		res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
+		i += mid_dollar_res->last_index + 2;
+		res->last_index += mid_dollar_res->last_index + 2;
+	}
+	else if (input[i] == '\'')
+	{
+		mid_dollar_res = deal_with_single_quotes(input + i + 1, settings);
+		res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
+		i += mid_dollar_res->last_index + 2;
+		res->last_index += mid_dollar_res->last_index + 1;
+	}
+	free_next_arg_return(mid_dollar_res);
+	return (i);
+}
+
 t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 {
 	int	i;
 	int	start;
-	t_next_arg_return *mid_dollar_res;
 	t_next_arg_return *res;
 
 	res = malloc(sizeof(t_next_arg_return));
@@ -136,30 +173,8 @@ t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 				i++;
 			res->arg = ft_str_join_free_both(res->arg, str_copy(input + res->last_index, i - res->last_index));
 			res->last_index = i;
-			if (input[i] == '$')
-			{
-				mid_dollar_res = deal_with_dollar(input + i + 1, settings);
-				res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
-				i += mid_dollar_res->last_index + 1;
-				res->last_index += mid_dollar_res->last_index + 1;
-				free_next_arg_return(mid_dollar_res);
-			}
-			else if (input[i] == '"')
-			{
-				mid_dollar_res = deal_with_double_quotes(input + i + 1, settings);
-				res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
-				i += mid_dollar_res->last_index + 2;
-				res->last_index += mid_dollar_res->last_index + 2;
-				free_next_arg_return(mid_dollar_res);
-			}
-			else if (input[i] == '\'')
-			{
-				mid_dollar_res = deal_with_single_quotes(input + i + 1, settings);
-				res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
-				i += mid_dollar_res->last_index + 2;
-				res->last_index += mid_dollar_res->last_index + 1;
-				free_next_arg_return(mid_dollar_res);
-			}
+			if (dollar_or_quote(input, i))
+				i += for_spec_char_return_index(input, res, settings, i);
 			else if (input[i] == '|' || input[i] == '>' || input[i] == '<')
 				return (res);
 		}
@@ -221,7 +236,6 @@ t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 		}
 	}
 	return (res);
-	
 }
 
 char **split(char *input, t_settings *settings)

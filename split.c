@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 19:18:48 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/22 13:18:13 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/22 14:38:03 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,36 +151,64 @@ int	for_spec_char_return_index(char *input, t_next_arg_return *res, t_settings *
 	return (i);
 }
 
-t_next_arg_return *get_next_arg(char *input, t_settings *settings)
+int	start_with_spec(char *input, int start)
 {
-	int	i;
-	int	start;
-	t_next_arg_return *res;
+	if (input[start] && input[start] == '$')
+		return (1);
+	if (input[start] && input[start] == '"')
+		return (1);
+	if (input[start] && input[start] == '\'')
+		return (1);
+	if (input[start] && input[start] == '|')
+		return (1);
+	if (input[start] && input[start] == '>')
+		return (1);
+	if (input[start] && input[start] == '<')
+		return (1);
+	return (0);
+}
 
-	res = malloc(sizeof(t_next_arg_return));
-	res->arg = NULL;
-	start = 0;
-	while (input[start] && (input[start] == ' ' || input[start] == '\t'))
-		start++;
-	res->last_index = start;
-	if (input[start] && !is_bash_special_char(input[start]))
+void	start_with_more(char *input, int start, t_next_arg_return *res)
+{
+	if (input[start + 1] && input[start + 1] == '>')
 	{
-		i = start;
-		res->last_index = i;
-		while(input[i] && input[i] != ' ' && input[i] != '\t')
-		{
-			while (input[i] && (!is_bash_special_char(input[i])) || input[i] == '=')
-				i++;
-			res->arg = ft_str_join_free_both(res->arg, str_copy(input + res->last_index, i - res->last_index));
-			res->last_index = i;
-			if (dollar_or_quote(input, i))
-				i += for_spec_char_return_index(input, res, settings, i);
-			else if (input[i] == '|' || input[i] == '>' || input[i] == '<')
-				return (res);
-		}
-		res -> last_index = i;
-		return (res);
+		res->last_index = start + 2;
+		res->arg = str_copy(">>\0", -1);
 	}
+	else if (input[start + 1] && input[start + 1] == '|')
+	{
+		res->last_index = start + 2;
+		res->arg = str_copy(">\0", -1);
+	}
+	else
+	{
+		res->last_index = start + 1;
+		res->arg = str_copy(">\0", -1);
+	}
+}
+
+void	start_with_less(char *input, int start, t_next_arg_return *res)
+{
+	if (input[start + 1] && input[start + 1] == '<')
+	{
+		res->last_index = start + 2;
+		res->arg = str_copy("<<\0", -1);
+	}
+	else
+	{
+		res->last_index = start + 1;
+		res->arg = str_copy("<\0", -1);
+	}
+}
+
+void	start_with_pipe(char *input, int start, t_next_arg_return *res)
+{
+	res->last_index = start + 1;
+	res->arg = str_copy("|\0", -1);
+}
+
+t_next_arg_return	*handle_spec_start(t_settings *settings, t_next_arg_return *res, char *input, int start)
+{
 	if (input[start] && input[start] == '$')
 	{
 		free_next_arg_return(res);
@@ -200,41 +228,58 @@ t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 		res->last_index += start + 2;
 	}
 	if (input[start] && input[start] == '|')
-	{
-		res->last_index = start + 1;
-		res->arg = str_copy("|\0", -1);
-	}
+		start_with_pipe(input, start, res);
+	// {
+	// 	res->last_index = start + 1;
+	// 	res->arg = str_copy("|\0", -1);
+	// }
 	if (input[start] && input[start] == '>')
-	{
-		if (input[start + 1] && input[start + 1] == '>')
-		{
-			res->last_index = start + 2;
-			res->arg = str_copy(">>\0", -1);
-		}
-		else if (input[start + 1] && input[start + 1] == '|')
-		{
-			res->last_index = start + 2;
-			res->arg = str_copy(">\0", -1);
-		}
-		else
-		{
-			res->last_index = start + 1;
-			res->arg = str_copy(">\0", -1);
-		}
-	}
+		start_with_more(input, start, res);
 	if (input[start] && input[start] == '<')
+		start_with_less(input, start, res);
+	return (res);
+}
+
+t_next_arg_return *handle_regular(char *input, int start, t_settings *settings, t_next_arg_return *res)
+{
+	int i;
+
+	i = start;
+	res->last_index = i;
+	while(input[i] && input[i] != ' ' && input[i] != '\t')
 	{
-		if (input[start + 1] && input[start + 1] == '<')
-		{
-			res->last_index = start + 2;
-			res->arg = str_copy("<<\0", -1);
-		}
-		else
-		{
-			res->last_index = start + 1;
-			res->arg = str_copy("<\0", -1);
-		}
+		while (input[i] && (!is_bash_special_char(input[i])) || input[i] == '=')
+			i++;
+		res->arg = ft_str_join_free_both(res->arg, str_copy(input + res->last_index, i - res->last_index));
+		res->last_index = i;
+		if (dollar_or_quote(input, i))
+			i += for_spec_char_return_index(input, res, settings, i);
+		else if (input[i] == '|' || input[i] == '>' || input[i] == '<')
+			return (res);
 	}
+	res -> last_index = i;
+	return (res);
+}
+
+t_next_arg_return *get_next_arg(char *input, t_settings *settings)
+{
+	int	i;
+	int	start;
+	t_next_arg_return *res;
+
+	res = malloc(sizeof(t_next_arg_return));
+	res->arg = NULL;
+	start = 0;
+	while (input[start] && (input[start] == ' ' || input[start] == '\t'))
+		start++;
+	res->last_index = start;
+	if (input[start] && !is_bash_special_char(input[start]))
+	{
+		res = handle_regular(input, start, settings, res);
+		return (res);
+	}
+	if (start_with_spec(input, start))
+		res = handle_spec_start(settings, res, input, start);
 	return (res);
 }
 
@@ -259,9 +304,6 @@ char **split(char *input, t_settings *settings)
 			len++;
 		free_next_arg_return(next_arg);
 	}
-	//for i in res:
-	//		if i == "|"
-	//			join
 	return (res);
 }
 

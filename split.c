@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 19:18:48 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/22 15:18:57 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/22 23:18:07 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,11 @@ int	is_bash_special_char(char c)
 	return (0);
 }
 
-
 t_next_arg_return	*deal_with_dollar(char *input, t_settings *settings)
 {
-	t_next_arg_return *res;
-	char *mid_line;
-	int	i;
+	t_next_arg_return	*res;
+	char				*mid_line;
+	int					i;
 
 	res = init_next_arg();
 	i = 0;
@@ -70,11 +69,12 @@ t_next_arg_return	*deal_with_double_quotes(char *input, t_settings *settings)
 	i = 0;
 	res = init_next_arg();
 	res->last_index = i;
-	while(input[i] && input[i] != '"')
+	while (input[i] && input[i] != '"')
 	{
 		while (input[i] && input[i] != '"' && input[i] != '$')
 			i++;
-		res->arg = ft_str_join_free_both(res->arg, str_copy(input + res->last_index, i - res->last_index));
+		res->arg = ft_str_join_free_both(res->arg,
+				str_copy(input + res->last_index, i - res->last_index));
 		res->last_index = i;
 		if (input[i] == '$')
 			i += for_spec_char_return_index(input, res, settings, i);
@@ -89,9 +89,9 @@ t_next_arg_return	*deal_with_double_quotes(char *input, t_settings *settings)
 
 t_next_arg_return	*deal_with_single_quotes(char *input, t_settings *settings)
 {
-	int	i;
+	int					i;
 	t_next_arg_return	*res;
-	
+
 	i = 0;
 	res = init_next_arg();
 	while (input[i] && input[i] != '\'')
@@ -118,9 +118,10 @@ int	dollar_or_quote(char *input, int i)
 		return (0);
 }
 
-int	for_spec_char_return_index(char *input, t_next_arg_return *res, t_settings *settings, int i)
+int	for_spec_char_return_index(char *input,
+		t_next_arg_return *res, t_settings *settings, int i)
 {
-	t_next_arg_return *mid_dollar_res;
+	t_next_arg_return	*mid_dollar_res;
 
 	if (input[i] == '$')
 	{
@@ -203,7 +204,8 @@ void	start_with_pipe(char *input, int start, t_next_arg_return *res)
 	res->arg = str_copy("|\0", -1);
 }
 
-t_next_arg_return	*handle_spec_start(t_settings *settings, t_next_arg_return *res, char *input, int start)
+t_next_arg_return	*handle_spec_start(t_settings *settings,
+		t_next_arg_return *res, char *input, int start)
 {
 	if (input[start] && input[start] == '$')
 	{
@@ -211,13 +213,13 @@ t_next_arg_return	*handle_spec_start(t_settings *settings, t_next_arg_return *re
 		res = deal_with_dollar(input + start + 1, settings);
 		res->last_index += start + 1;
 	}
-	if(input[start] && input[start] == '"')
+	if (input[start] && input[start] == '"')
 	{
 		free_next_arg_return(res);
 		res = deal_with_double_quotes(input + start + 1, settings);
 		res->last_index += start + 2;
 	}
-	if(input[start] && input[start] == '\'')
+	if (input[start] && input[start] == '\'')
 	{
 		free_next_arg_return(res);
 		res = deal_with_single_quotes(input + start + 1, settings);
@@ -232,17 +234,19 @@ t_next_arg_return	*handle_spec_start(t_settings *settings, t_next_arg_return *re
 	return (res);
 }
 
-t_next_arg_return *handle_regular(char *input, int start, t_settings *settings, t_next_arg_return *res)
+t_next_arg_return	*handle_regular(char *input, int start,
+		t_settings *settings, t_next_arg_return *res)
 {
-	int i;
+	int	i;
 
 	i = start;
 	res->last_index = i;
-	while(input[i] && input[i] != ' ' && input[i] != '\t')
+	while (input[i] && input[i] != ' ' && input[i] != '\t')
 	{
 		while (input[i] && (!is_bash_special_char(input[i])) || input[i] == '=')
 			i++;
-		res->arg = ft_str_join_free_both(res->arg, str_copy(input + res->last_index, i - res->last_index));
+		res->arg = ft_str_join_free_both(res->arg,
+				str_copy(input + res->last_index, i - res->last_index));
 		res->last_index = i;
 		if (dollar_or_quote(input, i))
 			i += for_spec_char_return_index(input, res, settings, i);
@@ -253,11 +257,11 @@ t_next_arg_return *handle_regular(char *input, int start, t_settings *settings, 
 	return (res);
 }
 
-t_next_arg_return *get_next_arg(char *input, t_settings *settings)
+t_next_arg_return	*get_next_arg(char *input, t_settings *settings)
 {
-	int	i;
-	int	start;
-	t_next_arg_return *res;
+	int					i;
+	int					start;
+	t_next_arg_return	*res;
 
 	res = malloc(sizeof(t_next_arg_return));
 	res->arg = NULL;
@@ -275,13 +279,13 @@ t_next_arg_return *get_next_arg(char *input, t_settings *settings)
 	return (res);
 }
 
-char **split(char *input, t_settings *settings)
+char	**split(char *input, t_settings *settings)
 {
-	char **res;
-	int	i;
-	int	len;
-	t_next_arg_return *next_arg;
-	
+	char				**res;
+	int					i;
+	int					len;
+	t_next_arg_return	*next_arg;
+
 	res = malloc(sizeof(char *));
 	res[0] = NULL;
 	i = 0;
@@ -299,11 +303,11 @@ char **split(char *input, t_settings *settings)
 	return (res);
 }
 
-char **copy_str_array(char **array, int n)
+char	**copy_str_array(char **array, int n)
 {
-	char **res;
-	int i;
-	
+	char	**res;
+	int		i;
+
 	if (!array)
 		return (NULL);
 	i = 0;
@@ -320,10 +324,12 @@ char **copy_str_array(char **array, int n)
 	return (res);
 }
 
-char	***add_string_array_to_array_of_string_arrays(char ***old, char **to_add)
+char	***add_string_array_to_array_of_string_arrays(char ***old,
+			char **to_add)
 {
-	char ***res;
-	int	i;
+	char	***res;
+	int		i;
+
 	if (!old)
 	{
 		res = malloc(sizeof(char **) * 2);
@@ -336,7 +342,7 @@ char	***add_string_array_to_array_of_string_arrays(char ***old, char **to_add)
 		i++;
 	res = malloc(sizeof(char **) * (i + 2));
 	i = 0;
-	while(old[i])
+	while (old[i])
 	{
 		res[i] = old[i];
 		i++;
@@ -347,7 +353,7 @@ char	***add_string_array_to_array_of_string_arrays(char ***old, char **to_add)
 	return (res);
 }
 
-char ***resplit(char **splitted)
+char	***resplit(char **splitted)
 {
 	char	***res;
 	int		prev_start;
@@ -362,20 +368,23 @@ char ***resplit(char **splitted)
 			i++;
 		else
 		{
-			res = add_string_array_to_array_of_string_arrays(res, copy_str_array(splitted + prev_start, i - prev_start));
+			res = add_string_array_to_array_of_string_arrays(res,
+					copy_str_array(splitted + prev_start, i - prev_start));
 			prev_start = i + 1;
 			i++;
 		}
 	}
-	res = add_string_array_to_array_of_string_arrays(res, copy_str_array(splitted + prev_start, i - prev_start));
+	res = add_string_array_to_array_of_string_arrays(res,
+			copy_str_array(splitted + prev_start, i - prev_start));
 	i++;
 	res = add_string_array_to_array_of_string_arrays(res, NULL);
 	return (res);
 }
 
-int		count_resplitted(char ***resplitted)
+int	count_resplitted(char ***resplitted)
 {
-	int i;
+	int	i;
+
 	i = 0;
 	if (!resplitted)
 		return (0);
@@ -386,8 +395,8 @@ int		count_resplitted(char ***resplitted)
 
 void	free_resplitted(char ***resplitted)
 {
-	int i;
-	// printf("freeing resplitted\n");
+	int	i;
+
 	if (!resplitted)
 		return ;
 	i = 0;
@@ -396,7 +405,5 @@ void	free_resplitted(char ***resplitted)
 		ft_split_clear(resplitted[i]);
 		i++;
 	}
-	
-	// printf("freed resplitted\n");
 	free(resplitted);
 }

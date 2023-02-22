@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/22 21:14:57 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/22 23:58:31 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,7 @@ char	**split_for_equal_sign(char *str)
 	char	**res;
 	int		i;
 
+	i = 0;
 	res = malloc(sizeof(char *) * 3);
 	res[2] = NULL;
 	while (str[i] && str[i] != '=')
@@ -184,6 +185,7 @@ int	deal_with_equal_sign(char **splitted_input, t_settings *settings)
 	int		i;
 	char	**temp;
 
+	i = 0;
 	while (splitted_input[i])
 	{
 		temp = split_for_equal_sign(splitted_input[i]);
@@ -280,6 +282,24 @@ void	no_command(char **splitted_input, char *path, char **paths)
 	exit (127);
 }
 
+int	check_pipe(char **splitted_input)
+{
+	int	i;
+
+	i = 0;
+	while (splitted_input[i])
+	{
+		if (splitted_input[i][0] == '|' && !splitted_input[i + 1])
+			return (printf("syntax error near unexpected token '|'\n")
+					, 0);
+		if (splitted_input[i][0] == '|' && splitted_input[i + 1][0] == '|')
+			return (printf("syntax error near unexpected token '||'\n")
+					, 0);
+		i++;
+	}
+	return (1);
+}
+
 int	check_angulars(char **splitted_input)
 {
 	int	i;
@@ -287,7 +307,7 @@ int	check_angulars(char **splitted_input)
 	i = 0;
 	while (splitted_input[i])
 	{
-		if (splitted_input[i][0] == '>' || splitted_input[i][0] == '<' || splitted_input[i][0] == '|')
+		if (splitted_input[i][0] == '>' || splitted_input[i][0] == '<')
 		{
 			if ((splitted_input[i + 1] && splitted_input[i + 1][0] == '|')
 				|| (splitted_input[i][0] == '|' && !splitted_input[i + 1]))
@@ -446,7 +466,7 @@ int	parse_input(char *input, t_settings *settings, char **envp)
 	if (!input)
 		return (0);
 	splitted_input = split(input, settings);
-	if (!check_angulars(splitted_input))
+	if (!check_angulars(splitted_input) || !check_pipe(splitted_input))
 	{
 		ft_split_clear(splitted_input);
 		return (1);

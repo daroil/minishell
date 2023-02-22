@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+         #
+#    By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 18:04:41 by sbritani          #+#    #+#              #
-#    Updated: 2023/02/12 16:20:13 by sbritani         ###   ########.fr        #
+#    Updated: 2023/02/23 00:07:41 by dhendzel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,14 +42,19 @@ $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(INCRL) -c $^ -o $@
 
 clean:
+	@$(MAKE) -C $(LIBFT) clean
 	rm -f $(OBJ)
 
 libft:
 	@$(MAKE) -C $(LIBFT)
 
 fclean: clean
+	@$(MAKE) -C $(LIBFT) fclean
 	rm -f $(NAME)
 
-re: fclean all
-
-.PHONY: all clean fclean re libft
+re: fclean relib all
+	
+relib:
+	@$(MAKE) -C $(LIBFT) re
+	
+.PHONY: all clean fclean re libft relib

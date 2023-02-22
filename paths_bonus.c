@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/09 16:49:22 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/17 23:59:59 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/22 23:19:29 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ char	*valid_path(char **paths, char *filename)
 	i = -1;
 	if (!access(filename, X_OK))
 		return (filename);
-	ft_putstr_fd("Before check4\n",2);
-
 	while (paths[++i])
 	{
 		path_with_slash = ft_strjoin(paths[i], "/");
@@ -58,7 +56,6 @@ char	*valid_path(char **paths, char *filename)
 			return (full_path);
 		free(full_path);
 	}
-	ft_putstr_fd("Before check5\n",2);
 	return (NULL);
 }
 

@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 20:50:23 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/22 20:40:56 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/22 23:18:39 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void	parse_env(char **env, t_settings *settings)
 	while (env[i])
 	{
 		temp = ft_split(env[i], "=");
-		
 		dict_add(settings->env, temp[0], temp[1]);
 		dict_add(settings->exported_env, temp[0], temp[1]);
 		ft_split_clear(temp);
@@ -31,7 +30,7 @@ void	parse_env(char **env, t_settings *settings)
 
 t_settings	*create_setttings(char **env)
 {
-	t_settings *res;
+	t_settings	*res;
 
 	res = malloc(sizeof(t_settings));
 	res->env = init_dict();

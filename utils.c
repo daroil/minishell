@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 18:43:10 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/22 15:27:12 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/22 23:09:11 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*ft_str_join_free_first(char *str1, char *str2)
 	len1 = ft_strlen(str1);
 	len2 = ft_strlen(str2);
 	if (!str1 && !str2)
-		return NULL;
+		return (NULL);
 	res = malloc(sizeof(char) * (len1 + len2 + 1));
 	i = -1;
 	if (str1)
@@ -57,7 +57,7 @@ char	*ft_str_join_free_both(char *str1, char *str2)
 	len1 = ft_strlen(str1);
 	len2 = ft_strlen(str2);
 	if (!str1 && !str2)
-		return NULL;
+		return (NULL);
 	res = malloc(sizeof(char) * (len1 + len2 + 1));
 	i = -1;
 	if (str1)
@@ -79,7 +79,7 @@ char	*ft_str_join_free_both(char *str1, char *str2)
 int	strings_equal(char *str1, char *str2)
 {
 	int	i;
-	
+
 	if (!str1 && !str2)
 		return (1);
 	if (!str1 || !str2)
@@ -92,7 +92,7 @@ int	strings_equal(char *str1, char *str2)
 	return (1);
 }
 
-char *str_copy(char *str, int n)
+char	*str_copy(char *str, int n)
 {
 	char	*res;
 	int		i;
@@ -123,8 +123,8 @@ char *str_copy(char *str, int n)
 
 char	**add_string_to_string_arr(char *str, char **arr, int n)
 {
-	char **res;
-	int	i;
+	char	**res;
+	int		i;
 
 	i = 0;
 	res = malloc(sizeof(char *) * (n + 2));
@@ -142,7 +142,7 @@ char	**add_string_to_string_arr(char *str, char **arr, int n)
 char	**remove_string_from_str_arr(char **arr, int n)
 {
 	char	**res;
-	int	i;
+	int		i;
 
 	i = 0;
 	while (arr[i++])

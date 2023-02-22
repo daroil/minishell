@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 21:26:30 by sbritani          #+#    #+#             */
-/*   Updated: 2023/01/24 12:42:58 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/22 23:09:39 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_next_arg_return	*init_next_arg(void)
 {
-	t_next_arg_return *res;
+	t_next_arg_return	*res;
 
 	res = malloc(sizeof(t_next_arg_return));
 	res->arg = NULL;

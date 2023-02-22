@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 21:23:15 by sbritani          #+#    #+#             */
-/*   Updated: 2022/10/24 02:35:40 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/23 00:08:49 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 	{
 		if (0 == ft_strncmp(haystack, needle, needle_len))
 			return ((char *)haystack);
-			haystack++;
-			i++;
+		haystack++;
+		i++;
 	}
 	return (NULL);
 }

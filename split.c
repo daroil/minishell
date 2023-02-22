@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 19:18:48 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/22 14:38:03 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/22 15:18:57 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,13 @@ t_next_arg_return	*deal_with_dollar(char *input, t_settings *settings)
 	return (res);
 }
 
+t_next_arg_return	*no_input(t_next_arg_return	*res, int i)
+{
+	free_next_arg_return(res);
+	res = init_next_arg();
+	res->last_index = i;
+	return (res);
+}
 
 t_next_arg_return	*deal_with_double_quotes(char *input, t_settings *settings)
 {
@@ -70,23 +77,12 @@ t_next_arg_return	*deal_with_double_quotes(char *input, t_settings *settings)
 		res->arg = ft_str_join_free_both(res->arg, str_copy(input + res->last_index, i - res->last_index));
 		res->last_index = i;
 		if (input[i] == '$')
-		{
-			mid_dollar_res = deal_with_dollar(input + i + 1, settings);
-			res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
-			i += mid_dollar_res->last_index + 1;
-			res->last_index += mid_dollar_res->last_index + 1;
-			free_next_arg_return(mid_dollar_res);
-		}
+			i += for_spec_char_return_index(input, res, settings, i);
 		if (input[i] == '"')
 			return (res);
 	}
 	if (!input[i])
-	{
-		free_next_arg_return(res);
-		res = init_next_arg();
-		res->last_index = i;
-		return (res);
-	}
+		return (no_input(res, i));
 	res->last_index = i;
 	return (res);
 }
@@ -130,21 +126,21 @@ int	for_spec_char_return_index(char *input, t_next_arg_return *res, t_settings *
 	{
 		mid_dollar_res = deal_with_dollar(input + i + 1, settings);
 		res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
-		i += mid_dollar_res->last_index + 1;
+		i = mid_dollar_res->last_index + 1;
 		res->last_index += mid_dollar_res->last_index + 1;
 	}
 	else if (input[i] == '"')
 	{
 		mid_dollar_res = deal_with_double_quotes(input + i + 1, settings);
 		res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
-		i += mid_dollar_res->last_index + 2;
+		i = mid_dollar_res->last_index + 2;
 		res->last_index += mid_dollar_res->last_index + 2;
 	}
 	else if (input[i] == '\'')
 	{
 		mid_dollar_res = deal_with_single_quotes(input + i + 1, settings);
 		res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
-		i += mid_dollar_res->last_index + 2;
+		i = mid_dollar_res->last_index + 2;
 		res->last_index += mid_dollar_res->last_index + 1;
 	}
 	free_next_arg_return(mid_dollar_res);
@@ -229,10 +225,6 @@ t_next_arg_return	*handle_spec_start(t_settings *settings, t_next_arg_return *re
 	}
 	if (input[start] && input[start] == '|')
 		start_with_pipe(input, start, res);
-	// {
-	// 	res->last_index = start + 1;
-	// 	res->arg = str_copy("|\0", -1);
-	// }
 	if (input[start] && input[start] == '>')
 		start_with_more(input, start, res);
 	if (input[start] && input[start] == '<')

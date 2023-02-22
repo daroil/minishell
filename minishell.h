@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/20 18:29:18 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/22 15:00:28 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ typedef struct	settings_s
 	struct termios *term_state;
 	t_pipex	*pipex;
 }	t_settings;
-
 
 
 
@@ -113,6 +112,8 @@ char **split(char *input, t_settings *settings);
 char ***resplit(char **splitted);
 void	free_resplitted(char ***resplitted);
 int		count_resplitted(char ***resplitted);
+
+int	for_spec_char_return_index(char *input, t_next_arg_return *res, t_settings *settings, int i);
 
 //split utils functions
 t_next_arg_return	*init_next_arg(void);

@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/20 18:47:06 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/22 14:56:20 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,13 +287,14 @@ int	check_angulars(char **splitted_input)
 	i = 0;
 	while (splitted_input[i])
 	{
-		if (splitted_input[i][0] == '>' || splitted_input[i][0] == '<')
+		if (splitted_input[i][0] == '>' || splitted_input[i][0] == '<' || splitted_input[i][0] == '|')
 		{
+			if ((splitted_input[i + 1] && splitted_input[i + 1][0] == '|')
+				|| (splitted_input[i][0] == '|' && !splitted_input[i + 1]))
+				return (printf("syntax error near unexpected token '|'\n")
+					, 0);
 			if (!splitted_input[i + 1])
 				return (printf("syntax error near unexpected token 'newline'\n")
-					, 0);
-			if (splitted_input[i + 1][0] == '|')
-				return (printf("syntax error near unexpected token '|'\n")
 					, 0);
 			if (splitted_input[i + 1][0] == '<')
 				return (printf("syntax error near unexpected token '<'\n")

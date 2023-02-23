@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_env_unset.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:39:00 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 04:02:34 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 14:33:17 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	export(char **splitted_input, t_settings *settings)
 	while (splitted_input[i])
 	{
 		temp = split_for_equal_sign(splitted_input[i]);
-		if (temp[1])
+		if (temp[1] && temp[1][0] != '\0')
 		{
 			dict_add(settings->env, temp[0], temp[1]);
 			dict_add(settings->exported_env, temp[0], temp[1]);
@@ -85,8 +85,6 @@ int	export(char **splitted_input, t_settings *settings)
 			dict_add(settings->exported_env, temp[0],
 				dict_get(settings->env, temp[0], NULL));
 		}
-		else
-			dict_add(settings->exported_env, temp[0], NULL);
 		ft_split_clear(temp);
 		i++;
 	}

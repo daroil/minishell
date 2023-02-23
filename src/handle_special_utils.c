@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:11:33 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:13:09 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:05:10 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	dollar_or_quote(char *input, int i)
 {

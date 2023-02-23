@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:37:41 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:38:27 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:02:22 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char	*cur_dir(void)
 {

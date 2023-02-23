@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/12 16:10:29 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 02:37:04 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:02:37 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char	**my_ls(void)
 {

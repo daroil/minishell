@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:19:17 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:22:28 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:01:52 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	read_from_to_shell(char *delimimter, int in_fd, int out_fd)
 {

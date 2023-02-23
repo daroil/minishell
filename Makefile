@@ -6,34 +6,34 @@
 #    By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 18:04:41 by sbritani          #+#    #+#              #
-#    Updated: 2023/02/23 03:43:22 by dhendzel         ###   ########.fr        #
+#    Updated: 2023/02/23 04:08:05 by dhendzel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc
 
-SRCS =	main.c\
-		utils.c\
-		settings.c\
-		dict.c\
-		debugging.c\
-		split.c\
-		resplit.c \
-		split_utils.c\
-		echo.c\
-		my_ls.c \
-		str_join_equal.c \
-		handle_cases.c \
-		handle_special_utils.c \
-		pipe_shell.c \
-		change_in_out_put.c \
-		pipes_utils.c \
-		parse_input.c \
-		cd_pwd.c \
-		export_env_unset.c \
-		pipex.c \
-		pipex_utils.c \
-		signals.c \
+SRCS =	src/main.c\
+		src/utils.c\
+		src/settings.c\
+		src/debugging.c\
+		src/parse_input.c \
+		src/split.c\
+		src/resplit.c \
+		src/split_utils.c\
+		src/str_join_equal.c \
+		src/handle_cases.c \
+		src/handle_special_utils.c \
+		src/signals.c \
+		build_in/dict.c\
+		build_in/cd_pwd.c \
+		build_in/my_ls.c \
+		build_in/echo.c\
+		build_in/export_env_unset.c \
+		pipex/change_in_out_put.c \
+		pipex/pipes_utils.c \
+		pipex/pipe_shell.c \
+		pipex/pipex.c \
+		pipex/pipex_utils.c \
 		libft/libft.a
 
 NAME =  shell

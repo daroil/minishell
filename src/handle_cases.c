@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:02:07 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:05:39 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:05:06 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	start_with_more(char *input, int start, t_next_arg_return *res)
 {

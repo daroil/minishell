@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 18:43:10 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 03:41:05 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:05:46 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	free_two_strings(char *str1, char *str2)
 {

@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:30:06 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:44:33 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:05:30 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	disable_ctrlc(void)
 {

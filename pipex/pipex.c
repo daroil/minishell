@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:26:05 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:46:22 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:00:22 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char	**unite_env(t_dict *dict)
 {

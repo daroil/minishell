@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 20:50:23 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/22 23:18:39 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:05:26 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	parse_env(char **env, t_settings *settings)
 {

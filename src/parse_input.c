@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:32:44 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:36:10 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:05:18 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	check_angulars(char **splitted_input)
 {

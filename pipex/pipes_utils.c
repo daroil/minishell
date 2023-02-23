@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:20:42 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:22:13 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:00:13 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	array_len(char **array)
 {

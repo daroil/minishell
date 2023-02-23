@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 02:58:29 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:00:23 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:05:41 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char	*ft_str_join_free_first(char *str1, char *str2)
 {

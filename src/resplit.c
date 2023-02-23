@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:09:17 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:15:06 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:05:22 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char	***resplit(char **splitted)
 {

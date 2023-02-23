@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 21:26:30 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 03:44:27 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:05:33 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 t_next_arg_return	*init_next_arg(void)
 {

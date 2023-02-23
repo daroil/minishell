@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 18:46:07 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 02:47:24 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:05:02 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	print_dict(t_dict *dict)
 {

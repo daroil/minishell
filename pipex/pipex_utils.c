@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:27:24 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:28:11 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:00:18 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char	*valid_path(char **paths, char *filename)
 {

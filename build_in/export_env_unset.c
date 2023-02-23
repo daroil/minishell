@@ -6,11 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:39:00 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:44:57 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 04:02:34 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	env(char **splitted_input, t_settings *settings)
 {

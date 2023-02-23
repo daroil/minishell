@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 16:25:31 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/13 13:32:09 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 02:46:09 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 t_dict	*init_dict(void)
 {
-	t_dict *res;
-	
+	t_dict	*res;
+
 	res = malloc(sizeof(t_dict));
 	res->keys = malloc(sizeof(char *));
 	res->values = malloc(sizeof(char *));
@@ -30,13 +30,13 @@ void	dict_add(t_dict *dict, char *key, char *value)
 	int	i;
 
 	i = 0;
-	while(dict->keys[i] && !strings_equal(dict->keys[i], key))
+	while (dict->keys[i] && !strings_equal(dict->keys[i], key))
 		i++;
 	if (!dict->keys[i])
 	{
-	dict->keys = add_string_to_string_arr(key, dict->keys, dict->len);
-	dict->values = add_string_to_string_arr(value, dict->values, dict->len);
-	dict->len++;
+		dict->keys = add_string_to_string_arr(key, dict->keys, dict->len);
+		dict->values = add_string_to_string_arr(value, dict->values, dict->len);
+		dict->len++;
 	}
 	else
 	{
@@ -75,11 +75,12 @@ void	dict_delete(t_dict *dict, char *key)
 void	free_dict(t_dict *dict)
 {
 	int	i;
+
 	i = 0;
 	while (i < dict->len)
 	{
 		free(dict->keys[i]);
-		if(dict->values[i])
+		if (dict->values[i])
 			free(dict->values[i]);
 		i++;
 	}
@@ -88,18 +89,19 @@ void	free_dict(t_dict *dict)
 	free(dict);
 }
 
-
 char	**unite_env(t_dict *dict)
 {
-	int i;
-	char **res;
-	char *string;
+	int		i;
+	char	**res;
+	char	*string;
 
 	res = NULL;
 	i = 0;
 	while (i < dict->len)
 	{
-		string = ft_str_join_free_both(ft_str_join_free_first(str_copy(dict->keys[i], -1), "=\0"), str_copy(dict->values[i], -1));
+		string = ft_str_join_free_both(ft_str_join_free_first(
+					str_copy(dict->keys[i], -1), "=\0"),
+				str_copy(dict->values[i], -1));
 		res = add_string_to_string_arr(string, res, i);
 		free(string);
 		i++;

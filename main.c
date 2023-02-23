@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 01:17:35 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 02:38:29 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,10 +291,10 @@ int	check_pipe(char **splitted_input)
 	{
 		if (splitted_input[i][0] == '|' && !splitted_input[i + 1])
 			return (printf("syntax error near unexpected token '|'\n")
-					, 0);
+				, 0);
 		if (splitted_input[i][0] == '|' && splitted_input[i + 1][0] == '|')
 			return (printf("syntax error near unexpected token '||'\n")
-					, 0);
+				, 0);
 		i++;
 	}
 	return (1);
@@ -406,7 +406,7 @@ void	pipex_init(t_settings *settings, char ***resplitted_input)
 
 void	clean_and_wait_pipex(t_settings *settings)
 {
-	int exit_code;
+	int	exit_code;
 
 	settings->pipex->i = 0;
 	while (settings->pipex->truby[settings->pipex->i])
@@ -515,7 +515,7 @@ void	interrupt_input(int sig)
 {
 	int	val;
 
-	val = kill_children(NULL, 1, sig) ;
+	val = kill_children(NULL, 1, sig);
 	if (sig == SIGINT)
 	{
 		printf("\n");

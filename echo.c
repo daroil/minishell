@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
+/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 15:55:13 by sbritani          #+#    #+#             */
-/*   Updated: 2023/01/23 22:35:33 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/23 02:39:34 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,14 @@
 int	echo(char **args)
 {
 	int	i;
+
 	i = 0;
 	if (!args || !args[0])
 	{
 		printf("\n");
 		return (0);
 	}
-	if(strings_equal(args[0], "-n\0"))
+	if (strings_equal(args[0], "-n\0"))
 		i++;
 	while (args[i])
 	{
@@ -30,8 +31,7 @@ int	echo(char **args)
 			printf(" ");
 		i++;
 	}
-	if(!strings_equal(args[0], "-n\0"))
+	if (!strings_equal(args[0], "-n\0"))
 		printf("\n");
 	return (0);
-	
 }

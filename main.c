@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/22 23:58:31 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 01:17:35 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -489,9 +489,7 @@ void	finish(t_settings *settings, char *input)
 	free(input);
 }
 
-void	my_readline(t_settings *settings);
-
-void	kill_children(t_settings *settings, int to_kill, int sig)
+int	kill_children(t_settings *settings, int to_kill, int sig)
 {
 	static t_settings	*local_settings = NULL;
 	int					i;
@@ -508,18 +506,24 @@ void	kill_children(t_settings *settings, int to_kill, int sig)
 			kill(local_settings->pipex->pid[i], sig);
 			i++;
 		}
+		return (1);
 	}
+	return (0);
 }
 
 void	interrupt_input(int sig)
 {
-	kill_children(NULL, 1, sig);
+	int	val;
+
+	val = kill_children(NULL, 1, sig) ;
 	if (sig == SIGINT)
 	{
+		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("\0", 0);
-		printf("\n");
 		rl_redisplay();
+		if (val)
+			printf("\r");
 	}
 	if (sig == SIGQUIT)
 	{
@@ -535,7 +539,7 @@ void	my_readline(t_settings *settings)
 
 	if (!local_settings)
 		local_settings = settings;
-	prompt = ft_str_join_free_both(str_copy("\r\0", -1),
+	prompt = ft_str_join_free_both(str_copy("\0", -1),
 			ft_str_join_free_first(cur_dir(), "> \0"));
 	local_settings->input = readline(prompt);
 	free(prompt);

@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:39:00 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 14:33:17 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/23 15:21:56 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ int	export(char **splitted_input, t_settings *settings)
 		ft_split_clear(temp);
 		i++;
 	}
+	if (!splitted_input[1])
+		export_print(settings);
 	return (0);
 }
 

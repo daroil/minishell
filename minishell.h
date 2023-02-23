@@ -6,7 +6,7 @@
 /*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 13:58:35 by sbritani         ###   ########.fr       */
+/*   Updated: 2023/02/23 15:21:44 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void				interrupt_input(int sig);
 int					deal_with_equal_sign(char **splitted_input,
 						t_settings *settings);
 int					export(char **splitted_input, t_settings *settings);
+int					export_print(t_settings *settings);
 int					unset(char **splitted_input, t_settings *settings);
 int					env(char **splitted_input, t_settings *settings);
 int					cd(char **splitted_input, t_settings *settings);

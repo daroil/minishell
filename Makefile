@@ -6,7 +6,7 @@
 #    By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 18:04:41 by sbritani          #+#    #+#              #
-#    Updated: 2023/02/23 13:41:21 by sbritani         ###   ########.fr        #
+#    Updated: 2023/02/23 15:25:23 by sbritani         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ SRCS =	src/main.c\
 		build_in/cd_pwd.c \
 		build_in/my_ls.c \
 		build_in/echo.c\
+		build_in/export_print.c\
 		build_in/export_env_unset.c \
 		pipex/change_in_out_put.c \
 		pipex/pipes_utils.c \
@@ -36,7 +37,7 @@ SRCS =	src/main.c\
 		pipex/pipex_utils.c \
 		libft/libft.a
 
-NAME =  shell
+NAME =  minishell
 LIBFT = ./libft
 OBJ	= $(SRCS:.c=.o)
 

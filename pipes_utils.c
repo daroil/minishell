@@ -1,39 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   split_utils.c                                      :+:      :+:    :+:   */
+/*   pipes_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/23 21:26:30 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 03:36:29 by dhendzel         ###   ########.fr       */
+/*   Created: 2023/02/23 03:20:42 by dhendzel          #+#    #+#             */
+/*   Updated: 2023/02/23 03:22:13 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_next_arg_return	*init_next_arg(void)
+int	array_len(char **array)
 {
-	t_next_arg_return	*res;
+	int	i;
 
-	res = malloc(sizeof(t_next_arg_return));
-	res->arg = NULL;
-	res->last_index = 0;
-	return (res);
+	i = 0;
+	while (array[i])
+		i++;
+	return (i);
 }
 
-void	free_next_arg_return(t_next_arg_return *next_arg)
+void	interrupt_input_doc(int sig)
 {
-	if (next_arg)
-	{
-		if (next_arg->arg)
-			free(next_arg->arg);
-		free(next_arg);
-	}
+	printf("\r");
+	exit(127);
 }
 
-void	clear_splits(char **splitted_input, char ***resplitted_input)
+void	clean_exit(char **cmd)
 {
-	ft_split_clear(splitted_input);
-	free_resplitted(resplitted_input);
+	ft_split_clear(cmd);
+	exit(1);
 }

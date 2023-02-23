@@ -6,35 +6,11 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/22 23:18:56 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 03:21:59 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// void	dups(int fd1, int fd2)
-// {
-// 	dup2(fd1, STDIN_FILENO);
-// 	dup2(fd2, STDOUT_FILENO);
-// }
-
-void	read_from_to_shell(char *delimimter, int in_fd, int out_fd)
-{
-	char	*buf;
-	char	*pipes;
-
-	ft_putstr_fd("> ", in_fd);
-	buf = get_next_line(in_fd);
-	while (buf && (ft_strncmp(buf, delimimter, ft_strlen(buf) - 1)
-			|| ft_strlen(buf) == 1))
-	{
-		ft_putstr_fd("> ", in_fd);
-		ft_putstr_fd(buf, out_fd);
-		free(buf);
-		buf = get_next_line(in_fd);
-	}
-	free(buf);
-}
 
 void	close_truby(int **truby, int cur, int len)
 {
@@ -58,120 +34,6 @@ void	close_truby(int **truby, int cur, int len)
 			close(truby[i][1]);
 		}
 		i++;
-	}
-}
-
-void	interrupt_input_doc(int sig)
-{
-	printf("\r");
-	exit(127);
-}
-
-int	array_len(char **array)
-{
-	int	i;
-
-	i = 0;
-	while (array[i])
-		i++;
-	return (i);
-}
-
-int	infile_change(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
-{
-	int	fd;
-
-	pipex->redirect_input = 1;
-	if (cmd_and_args[i + 1])
-	{
-		fd = open(cmd_and_args[i + 1], O_RDONLY);
-		if (fd == -1)
-		{
-			perror("file not found");
-			ft_split_clear(cmd);
-			exit(127);
-		}
-		dup2(fd, STDIN_FILENO);
-		return (1);
-	}
-	else
-	{
-		perror("file not found");
-		ft_split_clear(cmd);
-		exit(127);
-	}
-}
-
-int	outfile_change(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
-{
-	int	fd;
-
-	pipex->redirect_output = 1;
-	if (cmd_and_args[i + 1])
-	{
-		fd = open(cmd_and_args[i + 1], O_WRONLY | O_TRUNC | O_CREAT, 0644);
-		if (fd == -1)
-		{
-			perror("No output file specified");
-			ft_split_clear(cmd);
-			exit(127);
-		}
-		dup2(fd, STDOUT_FILENO);
-		return (1);
-	}
-	else
-	{
-		perror("No output file specified");
-		ft_split_clear(cmd);
-		exit(127);
-	}
-}
-
-int	outfile_change_append(t_pipex *pipex, char **cmd,
-	int i, char **cmd_and_args)
-{
-	int	fd;
-
-	pipex->redirect_output = 1;
-	if (cmd_and_args[i + 1])
-	{
-		fd = open(cmd_and_args[i + 1], O_RDWR | O_CREAT | O_APPEND, 0644);
-		if (fd == -1)
-		{
-			perror("No output file specified");
-			ft_split_clear(cmd);
-			exit(127);
-		}
-		dup2(fd, STDOUT_FILENO);
-		return (1);
-	}
-	else
-	{
-		perror("No output file specified");
-		ft_split_clear(cmd);
-		exit(127);
-	}
-}
-
-int	infile_heredoc(t_pipex *pipex, char **cmd, int i, char **cmd_and_args)
-{
-	int	heredoc_pipe[2];
-
-	pipex->redirect_input = 1;
-	if (cmd_and_args[i + 1])
-	{
-		signal(SIGINT, interrupt_input_doc);
-		pipe(heredoc_pipe);
-		read_from_to_shell(cmd_and_args[i + 1], STDIN_FILENO, heredoc_pipe[1]);
-		close(heredoc_pipe[1]);
-		dup2(heredoc_pipe[0], STDIN_FILENO);
-		return (1);
-	}
-	else
-	{
-		perror("No delimiter specified");
-		ft_split_clear(cmd);
-		exit(127);
 	}
 }
 
@@ -210,12 +72,6 @@ int	basic_commands_pipe(char **cmd, t_settings *settings)
 	if (ft_strchr(cmd[0], '='))
 		return (deal_with_equal_sign(cmd, settings), 1);
 	return (0);
-}
-
-void	clean_exit(char **cmd)
-{
-	ft_split_clear(cmd);
-	exit(1);
 }
 
 char	**change_in_out_put_create_cmd(char **cmd_and_args,

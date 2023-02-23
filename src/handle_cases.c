@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_cases.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:02:07 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 04:05:06 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 13:47:21 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	start_with_less(char *input, int start, t_next_arg_return *res)
 	}
 }
 
-void	start_with_pipe(char *input, int start, t_next_arg_return *res)
+void	start_with_pipe(int start, t_next_arg_return *res)
 {
 	res->last_index = start + 1;
 	res->arg = str_copy("|\0", -1);
@@ -60,7 +60,7 @@ t_next_arg_return	*handle_regular(char *input, int start,
 	res->last_index = i;
 	while (input[i] && input[i] != ' ' && input[i] != '\t')
 	{
-		while (input[i] && (!is_bash_special_char(input[i])) || input[i] == '=')
+		while (input[i] && (!is_bash_special_char(input[i]) || input[i] == '='))
 			i++;
 		res->arg = ft_str_join_free_both(res->arg,
 				str_copy(input + res->last_index, i - res->last_index));
@@ -92,11 +92,11 @@ t_next_arg_return	*handle_spec_start(t_settings *settings,
 	if (input[start] && input[start] == '\'')
 	{
 		free_next_arg_return(res);
-		res = deal_with_single_quotes(input + start + 1, settings);
+		res = deal_with_single_quotes(input + start + 1);
 		res->last_index += start + 2;
 	}
 	if (input[start] && input[start] == '|')
-		start_with_pipe(input, start, res);
+		start_with_pipe(start, res);
 	if (input[start] && input[start] == '>')
 		start_with_more(input, start, res);
 	if (input[start] && input[start] == '<')

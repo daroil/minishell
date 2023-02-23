@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:37:41 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 04:02:22 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 13:53:48 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	pwd(char **splitted_input)
 	return (0);
 }
 
-int	cd_home(char **splitted_input, t_settings *settings)
+int	cd_home(t_settings *settings)
 {
 	char	*temp;
 	char	*other_temp;
@@ -57,7 +57,7 @@ int	cd_home(char **splitted_input, t_settings *settings)
 	return (0);
 }
 
-int	cd_minus(char **splitted_input, t_settings *settings)
+int	cd_minus(t_settings *settings)
 {
 	char	*temp;
 	char	*other_temp;
@@ -76,13 +76,12 @@ int	cd_minus(char **splitted_input, t_settings *settings)
 
 int	cd(char **splitted_input, t_settings *settings)
 {
-	char	*temp;
 	char	*other_temp;
 
 	if (!splitted_input[1])
-		return (cd_home(splitted_input, settings));
+		return (cd_home(settings));
 	if (strings_equal(splitted_input[1], "-\0"))
-		return (cd_minus(splitted_input, settings));
+		return (cd_minus(settings));
 	if (!access(splitted_input[1], X_OK))
 	{
 		free(settings->last_working_directory);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:20:42 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 04:00:13 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 13:58:26 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,12 @@ int	array_len(char **array)
 	return (i);
 }
 
-void	interrupt_input_doc(int sig)
+void	interrupt_input_doc(int signal)
 {
-	printf("\r");
+	if (signal || !signal)
+	{
+		printf("\r");
+	}
 	exit(127);
 }
 

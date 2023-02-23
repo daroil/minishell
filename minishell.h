@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 03:49:53 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 13:58:35 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,8 @@ char				*str_copy(char *str, int n);
 char				*ft_str_join_free_both(char *str1, char *str2);
 
 //parsing input
-int					parse_input(char *input, t_settings *settings, char **envp);
-int					check_basic_commands(char **splitted_input,
-						char ***resplitted_input, t_settings *settings);
+int					parse_input(char *input, t_settings *settings);
+int					check_basic_commands(char **splitted_input);
 int					basic_commands(char **splitted_input,
 						char ***resplitted_input, t_settings *settings);
 int					check_angulars(char **splitted_input);
@@ -96,8 +95,8 @@ int					unset(char **splitted_input, t_settings *settings);
 int					env(char **splitted_input, t_settings *settings);
 int					cd(char **splitted_input, t_settings *settings);
 char				*cur_dir(void);
-int					cd_home(char **splitted_input, t_settings *settings);
-int					cd_minus(char **splitted_input, t_settings *settings);
+int					cd_home(t_settings *settings);
+int					cd_minus(t_settings *settings);
 int					pwd(char **splitted_input);
 char				**split_for_equal_sign(char *str);
 void				free_last_cmd(t_settings *settings);
@@ -139,10 +138,10 @@ void				start_with_more(char *input, int start,
 						t_next_arg_return *res);
 void				start_with_less(char *input, int start,
 						t_next_arg_return *res);
-void				start_with_pipe(char *input, int start,
+void				start_with_pipe(int start,
 						t_next_arg_return *res);
 int					dollar_or_quote(char *input, int i);
-t_next_arg_return	*deal_with_single_quotes(char *input, t_settings *settings);
+t_next_arg_return	*deal_with_single_quotes(char *input);
 t_next_arg_return	*deal_with_double_quotes(char *input, t_settings *settings);
 t_next_arg_return	*no_input(t_next_arg_return	*res, int i);
 int					dollar_or_quote(char *input, int i);
@@ -183,7 +182,7 @@ void				no_command(char **splitted_input, char *path, char **paths);
 char				*valid_path(char **paths, char *filename);
 int					single_pipe(char **cmd_and_args, t_pipex pipex,
 						char **envp, t_settings *settings);
-void				interrupt_input_doc(int sig);
+void				interrupt_input_doc(int signal);
 int					outfile_change_append(t_pipex *pipex, char **cmd,
 						int i, char **cmd_and_args);
 int					outfile_change(t_pipex *pipex, char **cmd,

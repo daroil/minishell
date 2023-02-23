@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 04:05:14 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 13:43:40 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	my_readline(t_settings *settings)
 	free(prompt);
 }
 
-void	shell_init(char *envp[], t_settings *settings)
+void	shell_init(t_settings *settings)
 {
 	kill_children(settings, 0, 0);
 	disable_ctrlc();
@@ -43,12 +43,11 @@ void	shell_init(char *envp[], t_settings *settings)
 
 void	shell(char *envp[])
 {
-	char		*res;
 	t_settings	*settings;
 
 	settings = create_setttings(envp);
-	shell_init(envp, settings);
-	if (!parse_input(settings->input, settings, envp))
+	shell_init(settings);
+	if (!parse_input(settings->input, settings))
 		return (finish(settings, settings->input));
 	while (settings->input)
 	{
@@ -62,7 +61,7 @@ void	shell(char *envp[])
 		}
 		free(settings->input);
 		my_readline(NULL);
-		if (!parse_input(settings->input, settings, envp))
+		if (!parse_input(settings->input, settings))
 			return (finish(settings, settings->input));
 	}
 	finish(settings, settings->input);

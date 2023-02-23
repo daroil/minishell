@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   change_in_out_put.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:19:17 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 04:01:52 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 13:54:11 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	read_from_to_shell(char *delimimter, int in_fd, int out_fd)
 {
 	char	*buf;
-	char	*pipes;
 
 	ft_putstr_fd("> ", in_fd);
 	buf = get_next_line(in_fd);

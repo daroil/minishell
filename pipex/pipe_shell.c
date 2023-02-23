@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_shell.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:45:27 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 04:00:09 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 13:55:15 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ int	single_pipe(char **cmd_and_args, t_pipex pipex,
 	char	**paths;
 	char	*path;
 
+	cmd = NULL;
 	pipex.pid[pipex.i] = fork();
 	if (!pipex.pid[pipex.i])
 	{

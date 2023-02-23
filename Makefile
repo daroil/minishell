@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+         #
+#    By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/17 18:04:41 by sbritani          #+#    #+#              #
-#    Updated: 2023/02/23 04:08:05 by dhendzel         ###   ########.fr        #
+#    Updated: 2023/02/23 13:41:21 by sbritani         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC = gcc
+CC = gcc -Wall -Wextra -Werror
 
 SRCS =	src/main.c\
 		src/utils.c\

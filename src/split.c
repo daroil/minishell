@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 19:18:48 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 04:05:38 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 13:44:28 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ t_next_arg_return	*deal_with_double_quotes(char *input, t_settings *settings)
 {
 	int					i;
 	t_next_arg_return	*res;
-	t_next_arg_return	*mid_dollar_res;
 
 	i = 0;
 	res = init_next_arg();
@@ -62,7 +61,7 @@ t_next_arg_return	*deal_with_double_quotes(char *input, t_settings *settings)
 	return (res);
 }
 
-t_next_arg_return	*deal_with_single_quotes(char *input, t_settings *settings)
+t_next_arg_return	*deal_with_single_quotes(char *input)
 {
 	int					i;
 	t_next_arg_return	*res;
@@ -83,7 +82,6 @@ t_next_arg_return	*deal_with_single_quotes(char *input, t_settings *settings)
 
 t_next_arg_return	*get_next_arg(char *input, t_settings *settings)
 {
-	int					i;
 	int					start;
 	t_next_arg_return	*res;
 

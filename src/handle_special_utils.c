@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_special_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:11:33 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 04:05:10 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 13:52:35 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ int	for_spec_char_return_index(char *input,
 		i = mid_dollar_res->last_index + 2;
 		res->last_index += mid_dollar_res->last_index + 2;
 	}
-	else if (input[i] == '\'')
+	else
 	{
-		mid_dollar_res = deal_with_single_quotes(input + i + 1, settings);
+		mid_dollar_res = deal_with_single_quotes(input + i + 1);
 		res->arg = ft_str_join_free_first(res->arg, mid_dollar_res->arg);
 		i = mid_dollar_res->last_index + 2;
 		res->last_index += mid_dollar_res->last_index + 1;

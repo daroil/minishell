@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sbritani <sbritani@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:32:44 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 04:05:18 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 13:42:42 by sbritani         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,7 @@ int	check_angulars(char **splitted_input)
 	return (1);
 }
 
-int	check_basic_commands(char **splitted_input,
-	char ***resplitted_input, t_settings *settings)
+int	check_basic_commands(char **splitted_input)
 {
 	if (strings_equal(splitted_input[0], "exit"))
 		return (1);
@@ -89,7 +88,7 @@ int	basic_commands(char **splitted_input,
 	return (clear_splits(splitted_input, resplitted_input), 1);
 }
 
-int	parse_input(char *input, t_settings *settings, char **envp)
+int	parse_input(char *input, t_settings *settings)
 {
 	char	**splitted_input;
 	char	***resplitted_input;
@@ -105,7 +104,7 @@ int	parse_input(char *input, t_settings *settings, char **envp)
 	resplitted_input = resplit(splitted_input);
 	if (count_resplitted(resplitted_input) == 1)
 	{
-		if ((check_basic_commands(splitted_input, resplitted_input, settings)))
+		if ((check_basic_commands(splitted_input)))
 			return (basic_commands(splitted_input, resplitted_input, settings));
 		else
 			return (pipex(splitted_input, resplitted_input, settings));

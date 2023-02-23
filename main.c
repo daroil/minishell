@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:53:20 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 03:41:03 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 03:45:03 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ void	shell_init(char *envp[], t_settings *settings)
 	signal(SIGQUIT, interrupt_input);
 	my_readline(settings);
 }
-
-
 
 void	shell(char *envp[])
 {

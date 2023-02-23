@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/23 16:25:31 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 02:46:09 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 03:46:57 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,24 +87,4 @@ void	free_dict(t_dict *dict)
 	free(dict->keys);
 	free(dict->values);
 	free(dict);
-}
-
-char	**unite_env(t_dict *dict)
-{
-	int		i;
-	char	**res;
-	char	*string;
-
-	res = NULL;
-	i = 0;
-	while (i < dict->len)
-	{
-		string = ft_str_join_free_both(ft_str_join_free_first(
-					str_copy(dict->keys[i], -1), "=\0"),
-				str_copy(dict->values[i], -1));
-		res = add_string_to_string_arr(string, res, i);
-		free(string);
-		i++;
-	}
-	return (res);
 }

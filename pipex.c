@@ -6,11 +6,31 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:26:05 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 03:26:24 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 03:46:22 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	**unite_env(t_dict *dict)
+{
+	int		i;
+	char	**res;
+	char	*string;
+
+	res = NULL;
+	i = 0;
+	while (i < dict->len)
+	{
+		string = ft_str_join_free_both(ft_str_join_free_first(
+					str_copy(dict->keys[i], -1), "=\0"),
+				str_copy(dict->values[i], -1));
+		res = add_string_to_string_arr(string, res, i);
+		free(string);
+		i++;
+	}
+	return (res);
+}
 
 void	pipex_init(t_settings *settings, char ***resplitted_input)
 {

@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 17:52:49 by sbritani          #+#    #+#             */
-/*   Updated: 2023/02/23 03:41:32 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/23 03:49:53 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,12 @@ typedef struct settings_s
 	t_pipex			*pipex;
 }	t_settings;
 
+typedef struct next_arg_return_s
+{
+	char	*arg;
+	int		last_index;
+}	t_next_arg_return;
+
 char				*ft_str_join_free_first(char *str1, char *str2);
 void				free_two_strings(char *str1, char *str2);
 int					strings_equal(char *str1, char *str2);
@@ -67,20 +73,20 @@ char				*str_copy(char *str, int n);
 char				*ft_str_join_free_both(char *str1, char *str2);
 
 //parsing input
-int	parse_input(char *input, t_settings *settings, char **envp);
-int	check_basic_commands(char **splitted_input,
-	char ***resplitted_input, t_settings *settings);
-int	basic_commands(char **splitted_input,
-	char ***resplitted_input, t_settings *settings);
-
-int	check_angulars(char **splitted_input);
-int	check_pipe(char **splitted_input);
+int					parse_input(char *input, t_settings *settings, char **envp);
+int					check_basic_commands(char **splitted_input,
+						char ***resplitted_input, t_settings *settings);
+int					basic_commands(char **splitted_input,
+						char ***resplitted_input, t_settings *settings);
+int					check_angulars(char **splitted_input);
+int					check_pipe(char **splitted_input);
 
 //signal functions
 void				disable_ctrlc(void);
 void				enable_ctrlc(void);
-int	kill_children(t_settings *settings, int to_kill, int sig);
-void	interrupt_input(int sig);
+int					kill_children(t_settings *settings,
+						int to_kill, int sig);
+void				interrupt_input(int sig);
 
 //basic shell functions
 int					deal_with_equal_sign(char **splitted_input,
@@ -89,13 +95,12 @@ int					export(char **splitted_input, t_settings *settings);
 int					unset(char **splitted_input, t_settings *settings);
 int					env(char **splitted_input, t_settings *settings);
 int					cd(char **splitted_input, t_settings *settings);
-char	*cur_dir(void);
-int	cd_home(char **splitted_input, t_settings *settings);
-int	cd_minus(char **splitted_input, t_settings *settings);
+char				*cur_dir(void);
+int					cd_home(char **splitted_input, t_settings *settings);
+int					cd_minus(char **splitted_input, t_settings *settings);
 int					pwd(char **splitted_input);
-char	**split_for_equal_sign(char *str);
-void	free_last_cmd(t_settings *settings);
-
+char				**split_for_equal_sign(char *str);
+void				free_last_cmd(t_settings *settings);
 
 // dict funcitons
 t_dict				*init_dict(void);
@@ -117,11 +122,6 @@ void				change_ctrl_c(void);
 int					echo(char **args);
 
 // split functions
-typedef struct next_arg_return_s
-{
-	char	*arg;
-	int		last_index;
-}	t_next_arg_return;
 
 int					is_bash_special_char(char c);
 t_next_arg_return	*get_next_arg(char *input, t_settings *settings);
@@ -141,30 +141,30 @@ void				start_with_less(char *input, int start,
 						t_next_arg_return *res);
 void				start_with_pipe(char *input, int start,
 						t_next_arg_return *res);
-int	dollar_or_quote(char *input, int i);
+int					dollar_or_quote(char *input, int i);
 t_next_arg_return	*deal_with_single_quotes(char *input, t_settings *settings);
 t_next_arg_return	*deal_with_double_quotes(char *input, t_settings *settings);
 t_next_arg_return	*no_input(t_next_arg_return	*res, int i);
-int	dollar_or_quote(char *input, int i);
-int	start_with_spec(char *input, int start);
+int					dollar_or_quote(char *input, int i);
+int					start_with_spec(char *input, int start);
 
 //resplit functions
-char	***resplit(char **splitted);
-int	count_resplitted(char ***resplitted);
-void	free_resplitted(char ***resplitted);
-char	***add_string_array_to_array_of_string_arrays(char ***old,
-			char **to_add);
-char	**copy_str_array(char **array, int n);
+char				***resplit(char **splitted);
+int					count_resplitted(char ***resplitted);
+void				free_resplitted(char ***resplitted);
+char				***add_string_array_to_array_of_string_arrays(char ***old,
+						char **to_add);
+char				**copy_str_array(char **array, int n);
 
 //split utils functions
 t_next_arg_return	*init_next_arg(void);
 void				free_next_arg_return(t_next_arg_return *next_arg);
 t_next_arg_return	*deal_with_dollar(char *input, t_settings *settings);
-void	clear_splits(char **splitted_input, char ***resplitted_input);
-
+void				clear_splits(char **splitted_input,
+						char ***resplitted_input);
 
 //pipex funcitons
-void	read_from_to_shell(char *delimimter, int in_fd, int out_fd);
+void				read_from_to_shell(char *delimimter, int in_fd, int out_fd);
 char				*repeat_line_n_times(char *str, int n);
 char				*join_three_lines(char *str1, char *str2, char *str3);
 char				**get_paths(char **env);
@@ -183,19 +183,23 @@ void				no_command(char **splitted_input, char *path, char **paths);
 char				*valid_path(char **paths, char *filename);
 int					single_pipe(char **cmd_and_args, t_pipex pipex,
 						char **envp, t_settings *settings);
-void	interrupt_input_doc(int sig);
-int	outfile_change_append(t_pipex *pipex, char **cmd,
-	int i, char **cmd_and_args);
-	int	outfile_change(t_pipex *pipex, char **cmd, int i, char **cmd_and_args);
-	int	infile_heredoc(t_pipex *pipex, char **cmd, int i, char **cmd_and_args);
-	int	array_len(char **array);
-	int	infile_change(t_pipex *pipex, char **cmd, int i, char **cmd_and_args);
-	void	clean_exit(char **cmd);
-	int	pipex(char **splitted_input, char ***resplitted_input, t_settings *settings);
-	void	clean_and_wait_pipex(t_settings *settings);
-	void	pipex_init(t_settings *settings, char ***resplitted_input);
-	int	string_in_array_of_strings(char *string, char **array);
-	
+void				interrupt_input_doc(int sig);
+int					outfile_change_append(t_pipex *pipex, char **cmd,
+						int i, char **cmd_and_args);
+int					outfile_change(t_pipex *pipex, char **cmd,
+						int i, char **cmd_and_args);
+int					infile_heredoc(t_pipex *pipex, char **cmd,
+						int i, char **cmd_and_args);
+int					array_len(char **array);
+int					infile_change(t_pipex *pipex, char **cmd,
+						int i, char **cmd_and_args);
+void				clean_exit(char **cmd);
+int					pipex(char **splitted_input, char ***resplitted_input,
+						t_settings *settings);
+void				clean_and_wait_pipex(t_settings *settings);
+void				pipex_init(t_settings *settings, char ***resplitted_input);
+int					string_in_array_of_strings(char *string, char **array);
+char				**unite_env(t_dict *dict);
 
 // wild stuf
 int					matches_wild(char *str, char *wild);

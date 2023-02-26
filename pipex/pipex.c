@@ -6,7 +6,7 @@
 /*   By: dhendzel <dhendzel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 03:26:05 by dhendzel          #+#    #+#             */
-/*   Updated: 2023/02/23 04:00:22 by dhendzel         ###   ########.fr       */
+/*   Updated: 2023/02/26 16:54:32 by dhendzel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	clean_and_wait_pipex(t_settings *settings)
 	settings->pipex->i = 0;
 	while (settings->pipex->i <= settings->pipex->number_of_pipes)
 	{
-		waitpid(settings->pipex->pid[settings->pipex->number_of_pipes],
+		waitpid(settings->pipex->pid[settings->pipex->i],
 			&exit_code, 0);
 		settings->last_exit_status = WEXITSTATUS(exit_code);
 		if (WIFSIGNALED(exit_code) && WTERMSIG(exit_code) == SIGSEGV)
